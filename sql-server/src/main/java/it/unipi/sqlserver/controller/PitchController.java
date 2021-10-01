@@ -5,9 +5,7 @@ import it.unipi.sqlserver.repository.PitchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.PostUpdate;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,9 +32,8 @@ public class PitchController {
 
     @GetMapping(path="/read")
     public List<Pitch> browsePitches(){
-        List<Pitch> pitches = new ArrayList<>();
+        List<Pitch> pitches;
         pitches = pitchRepository.findAll();
-        System.out.println(pitches.toString());
         return pitches;
     }
 
