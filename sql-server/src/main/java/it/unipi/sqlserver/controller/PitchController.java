@@ -5,7 +5,10 @@ import it.unipi.sqlserver.repository.PitchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.PostUpdate;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("pitch")
@@ -25,8 +28,24 @@ public class PitchController {
     @DeleteMapping(path= "/delete/{name}")
     @Transactional
     public String deletePitch(@PathVariable ("name") String name){
-        Long id;
-        id = pitchRepository.deletePitchByName(name);
-        return "Pitch id:" + id + " name:" + name + " deleted!";
+        pitchRepository.deletePitchByName(name);
+        return "Pitch " + name + " deleted!";
+    }
+
+    @GetMapping(path="/read")
+    public List<Pitch> browsePitches(){
+        List<Pitch> pitches = new ArrayList<>();
+        pitches = pitchRepository.findAll();
+        System.out.println(pitches.toString());
+        return pitches;
+    }
+
+    @PutMapping(path="/update/{name}/{status}")
+    public Boolean updateStatus(@PathVariable ("status") Boolean status, @PathVariable ("name") String name){
+        Pitch pitch;
+        pitch = pitchRepository.findPitchByName(name);
+        pitch.setAvailable(status);
+        pitchRepository.save(pitch);
+        return status;
     }
 }

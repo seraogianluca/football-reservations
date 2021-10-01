@@ -18,6 +18,7 @@ public class Pitch implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    private Boolean available = true;
 
     public Pitch(String name){
         this.name = name;

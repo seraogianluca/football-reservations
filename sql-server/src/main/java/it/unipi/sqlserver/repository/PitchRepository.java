@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PitchRepository extends JpaRepository<Pitch, Long> {
     Long deletePitchByName(String name);
+    Pitch findPitchByName(String name);
 }
