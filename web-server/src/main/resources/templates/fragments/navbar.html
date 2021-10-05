@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/fragments/navbar.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <title>Navigation Bar</title>
+</head>
+<body>
+    <nav class="navbar">
+        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home' ? 'active':''}"
+           th:href="@{/home}">Home<i class="fa fa-fw fa-home"></i></a>
+        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/match/new' ? 'active':''}"
+           th:href="@{/home/match/new}">New match<i class="fa fa-calendar-plus-o"></i></a>
+        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/pitches' ? 'active':''}"
+           th:href="@{/home/pitches}">Search matches<i class="fa fa-fw fa-search"></i></a>
+        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/dashboards' ? 'active':''}"
+           href="#">Dashboards<i class="fa fa-envelope"></i></a>
+        <a th:href="@{/}">Logout<i class="fa fa-times"></i></a>
+    </nav>
+</body>
+</html>

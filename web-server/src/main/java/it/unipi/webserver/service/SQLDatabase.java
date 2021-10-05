@@ -1,22 +1,34 @@
 package it.unipi.webserver.service;
 
-import it.unipi.webserver.entity.Pitch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import java.util.List;
-
-@RestController
+@Service
 public class SQLDatabase {
 
-    private String baseUri = "http://localhost:8080";
+    private final WebClient database;
+
     @Autowired
-    private WebClient.Builder webClientBuilder;
+    public SQLDatabase() {
+        this.database = WebClient.builder().baseUrl("http://localhost:8080/").build();
+    }
 
+    //Add player
+    //Add match
+    //Book game
 
+    /* ADD MATCH */
+    public String addGame(String playerManager, String pitchName, int time) {
+        String requestPath = playerManager + "/" + pitchName + "/" + time;
+        return database.post()
+                .uri("game/add/" + requestPath)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
+    /*
     @GetMapping(path ="/read")
     public List<Pitch> browsePitches(){
         return this.webClientBuilder.build()
@@ -28,16 +40,8 @@ public class SQLDatabase {
                 .block();
 
     }
-    @PostMapping(path="/add/{name}")
-    public String addPitch(@PathVariable("name") String name){
-        return this.webClientBuilder.build()
-                .post()
-                .uri(baseUri + "/pitch/add/" + name)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
-
+     */
+    /*
     @DeleteMapping(path="/delete/{name}")
     public String deletePitch(@PathVariable("name") String name){
         return this.webClientBuilder.build()
@@ -58,4 +62,5 @@ public class SQLDatabase {
                 .bodyToMono(Boolean.class)
                 .block();
     }
+    */
 }

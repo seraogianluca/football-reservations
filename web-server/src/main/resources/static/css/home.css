@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@800&family=Open+Sans:wght@300&display=swap');
+
+body {
+    background-color: #FAEBE0;
+    display: flex;
+    place-items: start stretch;
+}
+
+.left-container {
+    max-width: 25%;
+    height: 100%;
+}
+
+.right-container {
+    max-width: 75%;
+    height: 100%;
+}

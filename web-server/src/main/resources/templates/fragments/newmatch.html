@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/fragments/newmatch.css}" rel="stylesheet" />
+    <title>New Match</title>
+</head>
+<body>
+    <form th:unless="${message}" th:action="@{/home/match/new/add}" th:object="${match}" method="post">
+        <label>Player manager</label>
+        <input type="text" th:field="*{playerManager}" />
+        <label>Pitch name</label>
+        <input type="text" th:field="*{pitchName}" />
+        <label>Time</label>
+        <input type="text" th:field="*{time}" />
+        <button type="submit">Save</button>
+    </form>
+
+    <h1 th:if="${message}" th:utext="${message}"></h1>
+</body>
+</html>

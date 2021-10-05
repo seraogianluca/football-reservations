@@ -1,0 +1,26 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #C9E4C5;
+}
+
+h1 {
+    font-family: 'Epilogue', sans-serif;
+    font-weight: bold;
+    font-size: 60px;
+    padding-top: 60px;
+    margin: auto;
+    color: #C1AC95;
+}
+
+p {
+    max-width: 60%;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 30px;
+    text-align: center;
+    color: white;
+    padding-top: 20px;
+    padding-bottom: 50px;
+}
