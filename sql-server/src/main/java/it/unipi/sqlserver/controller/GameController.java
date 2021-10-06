@@ -44,11 +44,28 @@ public class GameController {
         Game game;
         Player player;
         game = gameRepository.findGameByGameId(gameId);
+        if(game.getPlayers().size() > 9){ //TODO: gestire concorrenza!
+            return "game full!";
+        }
         player = playerRepository.findPlayerByUserName(playerName);
         game.addPlayer(player);
         gameRepository.save(game);
 
         return playerName + " has booked the game successfully!";
+    }
+    @PutMapping(path="/update/unbook/{gameId}/{playerName}")
+    public String unBookGame(@PathVariable("gameId") Long gameId,
+                           @PathVariable ("playerName") String playerName){
+
+        Game game;
+        Player player;
+        game = gameRepository.findGameByGameId(gameId);
+
+        player = playerRepository.findPlayerByUserName(playerName);
+        game.removePlayer(player);
+        gameRepository.save(game);
+
+        return playerName + " has unbooked the game successfully!";
     }
 
 

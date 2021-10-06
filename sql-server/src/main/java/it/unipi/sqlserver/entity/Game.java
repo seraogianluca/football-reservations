@@ -43,4 +43,7 @@ public class Game implements Serializable {
     public void addPlayer(Player p){
         players.add(p);
     }
+    public void removePlayer(Player p){
+        players.remove(p);
+    }
 }
