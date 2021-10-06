@@ -8,6 +8,8 @@ import it.unipi.sqlserver.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+
 @RestController
 @RequestMapping("player")
 public class PlayerController {
@@ -19,8 +21,8 @@ public class PlayerController {
 
     @PostMapping(path = "/add/{userName}/{password}")
     public String addPlayer(@PathVariable("userName") String userName,
-                          @PathVariable("password") String password
-    ){
+                            @PathVariable("password") String password
+    ) {
 
         Player player = new Player();
         player.setUserName(userName);
@@ -29,6 +31,13 @@ public class PlayerController {
         return "player " + userName + "added to the system";
     }
 
+    @DeleteMapping(path = "/delete/{playerId}")
+    @Transactional
+    public String deletePlayer(@PathVariable("playerId") Long playerId) {
+        playerRepository.deleteById(playerId);
+
+        return "Player deleted!";
+    }
 
 
 }

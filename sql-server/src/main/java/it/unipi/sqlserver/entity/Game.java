@@ -1,14 +1,12 @@
 package it.unipi.sqlserver.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +22,8 @@ public class Game implements Serializable {
     private String playerManager;
     private String pitchName;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonManagedReference
     @JoinTable(name = "match_booking", joinColumns = {
             @JoinColumn(name = "gameId") }, inverseJoinColumns = { @JoinColumn(name = "playerId") })
     private List<Player> players;
