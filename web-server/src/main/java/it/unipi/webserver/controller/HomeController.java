@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/home")
 public class HomeController {
@@ -38,6 +40,34 @@ public class HomeController {
 
         System.out.println("Response: " + response);
         model.addAttribute("fragment", "newmatch");
+        model.addAttribute("message", response);
+        return "home";
+    }
+
+    @GetMapping(path="/games")
+    public String browseMyGames(Model model) {
+        List<Game> games = database.browseGames("mario");
+
+        model.addAttribute("fragment", "main");
+        model.addAttribute("games", games);
+        return "home";
+    }
+
+    @GetMapping(path="/games/search")
+    public String browseBookableGames(Model model) {
+        List<Game> games = database.bookableGames("mario");
+
+        model.addAttribute("fragment", "search");
+        model.addAttribute("games", games);
+        return "home";
+    }
+
+    @PostMapping(path="/games/book")
+    public String bookGame(Model model,
+                           @RequestParam("book") String gameId) {
+        String response = database.bookGame(gameId, "mario");
+
+        model.addAttribute("fragment", "search");
         model.addAttribute("message", response);
         return "home";
     }

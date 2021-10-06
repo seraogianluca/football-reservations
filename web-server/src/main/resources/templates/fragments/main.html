@@ -1,10 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <link th:href="@{/css/fragments/main.css}" rel="stylesheet" />
     <title>Main</title>
 </head>
 <body>
-    <h1>Welcome to football central!</h1>
+    <h1>Hello, mario!</h1>
+    <hr>
+    <p class="table-title">My games</p>
+    <table class="my-games">
+        <tr>
+            <th>Pitch</th>
+            <th>Time</th>
+            <th>Player manager</th>
+        </tr>
+        <tr th:if="${game.playerManager} == 'mario'" th:each="game: ${games}">
+            <td th:text="${game.pitchName}"></td>
+            <td th:text="${game.time}"></td>
+            <td>owner</td>
+        </tr>
+    </table>
+
+    <p class="table-title">My reservations</p>
+    <table class="my-reservations">
+        <tr>
+            <th>Pitch</th>
+            <th>Time</th>
+            <th>Player manager</th>
+        </tr>
+        <tr th:unless="${game.playerManager} == 'mario'" th:each="game: ${games}">
+            <td th:text="${game.pitchName}"></td>
+            <td th:text="${game.time}"></td>
+            <td th:text="${game.playerManager}"></td>
+        </tr>
+    </table>
 </body>
 </html>

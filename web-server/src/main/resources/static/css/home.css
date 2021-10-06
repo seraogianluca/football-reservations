@@ -1,17 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@800&family=Open+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@800&family=Open+Sans:wght@300;500&display=swap');
 
 body {
-    background-color: #FAEBE0;
     display: flex;
-    place-items: start stretch;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 0;
+    background-color: #FAEBE0;
 }
 
 .left-container {
-    max-width: 25%;
-    height: 100%;
+    min-width: 25%;
+    min-height: 100%;
 }
 
 .right-container {
-    max-width: 75%;
-    height: 100%;
+    min-width: 75%;
+    min-height: 100%;
+
+    display: flex;
+    flex-flow: column nowrap;
 }

@@ -6,8 +6,7 @@
     <link th:href="@{/css/home.css}" rel="stylesheet" />
 </head>
 <body>
-    <div class="left-container" th:insert="fragments/navbar.html">
-    </div>
+    <div class="left-container" th:insert="fragments/navbar.html"></div>
     <div class="right-container" th:if="${fragment}" th:insert="'fragments/' + ${fragment}">
         <h1 th:if="${message}" th:utext="${message}">This is a text!</h1>
     </div>

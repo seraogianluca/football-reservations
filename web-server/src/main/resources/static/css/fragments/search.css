@@ -1,0 +1,26 @@
+h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 40px;
+    font-weight: 500;
+    color: #5E454B;
+    margin-left: 5%;
+    margin-bottom: 0;
+}
+
+hr {
+    width: 100%;
+    border: 1px solid #C1AC95;
+}
+
+table {
+    /*width: 100%;*/
+    margin-left: 8%;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    color: #5E454B;
+}
+
+th, td {
+    text-align: left;
+}

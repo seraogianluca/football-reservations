@@ -1,8 +1,12 @@
 package it.unipi.webserver.service;
 
+import it.unipi.webserver.entity.Game;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
 
 @Service
 public class SQLDatabase {
@@ -28,19 +32,35 @@ public class SQLDatabase {
                 .block();
     }
 
-    /*
-    @GetMapping(path ="/read")
-    public List<Pitch> browsePitches(){
-        return this.webClientBuilder.build()
-                .get()
-                .uri(baseUri + "/pitch/read")
+    /* FIND ALL MY GAMES */
+    public List<Game> browseGames(String username) {
+        return database.get()
+                .uri("game/get/user/" + username)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Pitch>>() {
+                .bodyToMono(new ParameterizedTypeReference<List<Game>>() {
                 })
                 .block();
-
     }
-     */
+
+    /* FIND BOOKABLE GAMES */
+    public List<Game> bookableGames(String username) {
+        return database.get()
+                .uri("game/get/all/" + username)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<Game>>() {
+                })
+                .block();
+    }
+
+    /* BOOK A GAME */
+    public String bookGame(String gameId, String player) {
+        return database.put()
+                .uri("game/update/" + gameId + "/" + player)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
     /*
     @DeleteMapping(path="/delete/{name}")
     public String deletePitch(@PathVariable("name") String name){

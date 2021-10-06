@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <link th:href="@{/css/fragments/newmatch.css}" rel="stylesheet" />
     <title>New Match</title>
 </head>
 <body>
+    <h1>Create a new match</h1>
     <form th:unless="${message}" th:action="@{/home/match/new/add}" th:object="${match}" method="post">
-        <label>Player manager</label>
-        <input type="text" th:field="*{playerManager}" />
-        <label>Pitch name</label>
-        <input type="text" th:field="*{pitchName}" />
-        <label>Time</label>
-        <input type="text" th:field="*{time}" />
+        <label for="manager">Player manager</label>
+        <input type="text" id="manager" th:field="*{playerManager}" />
+        <label for="pitch">Pitch name</label>
+        <input type="text" id="pitch" th:field="*{pitchName}" />
+        <label for="time">Time</label>
+        <input type="text" id="time" th:field="*{time}" />
         <button type="submit">Save</button>
     </form>
 
