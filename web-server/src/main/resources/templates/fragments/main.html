@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <link th:href="@{/css/fragments/main.css}" rel="stylesheet" />
     <title>Main</title>
 </head>
 <body>
-    <h1>Hello, mario!</h1>
+    <h1>Hello, <span sec:authentication="name">Bob</span></h1>
     <hr>
     <p class="table-title">My games</p>
     <table class="my-games">
@@ -13,11 +14,13 @@
             <th>Pitch</th>
             <th>Time</th>
             <th>Player manager</th>
+            <th>Players</th>
         </tr>
-        <tr th:if="${game.playerManager} == 'mario'" th:each="game: ${games}">
+        <tr th:if="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
             <td th:text="${game.pitchName}"></td>
             <td th:text="${game.time}"></td>
             <td>owner</td>
+            <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
         </tr>
     </table>
 
@@ -27,11 +30,13 @@
             <th>Pitch</th>
             <th>Time</th>
             <th>Player manager</th>
+            <th>Players</th>
         </tr>
-        <tr th:unless="${game.playerManager} == 'mario'" th:each="game: ${games}">
+        <tr th:unless="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
             <td th:text="${game.pitchName}"></td>
             <td th:text="${game.time}"></td>
             <td th:text="${game.playerManager}"></td>
+            <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
         </tr>
     </table>
 </body>

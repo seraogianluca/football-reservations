@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <link th:href="@{/css/fragments/navbar.css}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
@@ -8,7 +9,10 @@
 <body>
     <nav class="navbar">
         <p class="logo">Football central</p>
-        <!-- <p class="user"><i class="fa fa-user-circle"></i> Mario</p> -->
+        <a style="pointer-events: none;" href="#">
+            <i class="fa fa-user-circle"></i>
+            <span sec:authentication="name">Bob</span>
+        </a>
         <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/games' ? 'active':''}"
            th:href="@{/home/games}"><i class="fa fa-soccer-ball-o"></i> Home</a>
         <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/match/new' ? 'active':''}"
@@ -17,7 +21,10 @@
            th:href="@{/home/games/search}"><i class="fa fa-fw fa-search"></i> Search matches</a>
         <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/dashboards' ? 'active':''}"
            href="#"><i class="fa fa-envelope"></i> Dashboards</a>
-        <a th:href="@{/}"><i class="fa fa-times"></i> Logout</a>
+        <a href="#" onclick="document.getElementById('logoutform').submit();">
+            <i class="fa fa-times"></i> Logout
+            <form id="logoutform" th:action="@{/logout}" method="post" type="hidden"></form>
+        </a>
     </nav>
 </body>
 </html>

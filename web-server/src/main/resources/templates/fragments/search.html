@@ -16,7 +16,7 @@
             <th>Players</th>
             <th></th>
         </tr>
-        <tr th:unless="${game.playerManager} == 'mario'" th:each="game: ${games}">
+        <tr th:each="game: ${games}">
             <form th:action="@{/home/games/book(book=${game.gameId})}" th:method="post">
                 <td th:text="${game.pitchName}"></td>
                 <td th:text="${game.time}"></td>

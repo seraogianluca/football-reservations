@@ -1,43 +1,46 @@
 h1 {
     font-family: 'Open Sans', sans-serif;
-    font-size: 32px;
-    color: #B5CDA3;
-    align-self: center;
+    font-size: 40px;
+    font-weight: 500;
+    color: #5E454B;
+    margin-left: 5%;
+    margin-bottom: 0;
+}
+
+hr {
+    width: 100%;
+    border: 1px solid #C1AC95;
 }
 
 form {
-    z-index: 1;
-    padding: 2% 20%;
-    margin-top: 40px;
+    margin-top: 5%;
+    margin-left: 5%;
+    max-width: 60%;
 }
 
 label {
     display: block;
     font-family: 'Open Sans', sans-serif;
     font-size: 24px;
-    text-align: center;
     padding: 6px;
-    color: #C1AC95;
+    color: #5E454B;
 }
 
 input[type=text] {
     width: 100%;
-    align-items: center;
-    margin: 8px 0;
     padding: 16px;
     display: inline-block;
     border: none;
-    border-bottom: 3px solid #C1AC95;
+    border-bottom: 1px solid #5E454B;
     background-color: #FAEBE0;
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif;
-    font-size: 12px;
-    text-align: center;
+    font-size: 16px;
 }
 
 input[type=text]:focus {
     outline: none;
-    border-bottom: 3px solid #B5CDA3;
+    border-bottom: 1px solid #B5CDA3;
 }
 
 button {

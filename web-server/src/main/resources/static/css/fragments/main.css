@@ -12,23 +12,14 @@ hr {
     border: 1px solid #C1AC95;
 }
 
-.my-games {
-    /*width: 41.5%;*/
-    margin-left: 15%;
+table {
+    margin-left: 5%;
     font-family: 'Open Sans', sans-serif;
     font-weight: 300;
     font-size: 16px;
     color: #5E454B;
 }
 
-.my-reservations {
-    /*width: 100%;*/
-    margin-left: 15%;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    color: #5E454B;
-}
 
 th, td {
     text-align: left;
@@ -40,5 +31,5 @@ th, td {
     font-weight: normal;
     text-align: left;
     color: #5E454B;
-    margin-left: 8%;
+    margin-left: 5%;
 }

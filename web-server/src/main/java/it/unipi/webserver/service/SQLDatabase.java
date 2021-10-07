@@ -1,6 +1,7 @@
 package it.unipi.webserver.service;
 
 import it.unipi.webserver.entity.Game;
+import it.unipi.webserver.entity.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,16 @@ public class SQLDatabase {
     //Add player
     //Add match
     //Book game
+
+    /* GET PLAYER */
+    public Player getPlayer(String username) {
+        String requestPath = "player/get/" + username;
+        return database.get()
+                .uri(requestPath)
+                .retrieve()
+                .bodyToMono(Player.class)
+                .block();
+    }
 
     /* ADD MATCH */
     public String addGame(String playerManager, String pitchName, int time) {

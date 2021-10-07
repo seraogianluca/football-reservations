@@ -5,7 +5,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background-color: #C9E4C5;
+    background-color: #FAEBE0;
 }
 
 form {
@@ -22,7 +22,7 @@ h1 {
     font-size: 60px;
     padding-top: 60px;
     margin: auto;
-    color: #C1AC95;
+    color: #B5CDA3;
 }
 
 p {
@@ -30,8 +30,8 @@ p {
     font-family: 'Open Sans', sans-serif;
     font-size: 24px;
     text-align: center;
-    color: white;
-    padding-top: 20px;
+    color: #5E454B;
+    margin-top: 0;
     padding-bottom: 20px;
 }
 
@@ -41,7 +41,7 @@ label {
     font-size: 16px;
     text-align: center;
     padding: 6px;
-    color: white;
+    color: #5E454B;
 }
 
 input[type=text], input[type=password] {
@@ -79,4 +79,13 @@ button:hover {
     align-items: center;
     justify-content: center;
     padding: 24px;
+}
+
+.message {
+    display: block;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    padding: 6px;
+    color: #5E454B;
 }

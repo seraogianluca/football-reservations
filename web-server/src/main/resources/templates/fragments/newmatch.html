@@ -6,9 +6,10 @@
 </head>
 <body>
     <h1>Create a new match</h1>
+    <hr>
     <form th:unless="${message}" th:action="@{/home/match/new/add}" th:object="${match}" method="post">
-        <label for="manager">Player manager</label>
-        <input type="text" id="manager" th:field="*{playerManager}" />
+        <!--<label for="manager">Player manager</label>
+        <input type="text" id="manager" th:field="*{playerManager}" /> -->
         <label for="pitch">Pitch name</label>
         <input type="text" id="pitch" th:field="*{pitchName}" />
         <label for="time">Time</label>

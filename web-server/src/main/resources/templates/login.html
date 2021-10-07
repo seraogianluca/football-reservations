@@ -3,22 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Football central</title>
-    <link th:href="@{/css/index.css}" rel="stylesheet" />
+    <link th:href="@{/css/login.css}" rel="stylesheet" />
 </head>
 <body>
 
     <h1>Football central</h1>
     <p> Welcome to football central, the reference site for match reservations in Pisa. Before proceeding, please login.</p>
-    <form action="#" th:action="@{/home/games}" th:method="get">
+    <form action="#" th:action="@{/login}" th:method="post">
         <div class="container">
+            <div class="message" th:if="${param.error}">Invalid username and/or password</div>
+            <div class="message" th:if="${param.logout}">You have been logged out</div>
             <label for="uname">Username</label>
-            <input type="text" id="uname">
+            <input type="text" id="uname" name="username" required/>
 
             <label for="psw">Password</label>
-            <input type="password" id="psw">
+            <input type="password" id="psw" name="password" required/>
 
             <button type="submit">Login</button>
         </div>
     </form>
+    <p th:if="${loginError}" th:utext="${loginError}"></p>
 </body>
 </html>
