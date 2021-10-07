@@ -39,5 +39,11 @@ public class PlayerController {
         return "Player deleted!";
     }
 
+    @GetMapping(path = "/get/{userName}")
+    public Player getUsername(@PathVariable("userName") String userName) {
+        Player player;
+        player = playerRepository.findPlayerByUserName(userName);
+        return player;
+    }
 
 }
