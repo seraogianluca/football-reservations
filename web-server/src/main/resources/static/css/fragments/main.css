@@ -12,6 +12,14 @@ hr {
     border: 1px solid #C1AC95;
 }
 
+p {
+    margin-left: 5%;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: #5E454B;
+}
+
 table {
     margin-left: 5%;
     font-family: 'Open Sans', sans-serif;
@@ -32,4 +40,16 @@ th, td {
     text-align: left;
     color: #5E454B;
     margin-left: 5%;
+}
+
+button {
+    border: none;
+    border-radius: 3px;
+    padding: 4px;
+    color: white;
+    background-color: darkred;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
 }

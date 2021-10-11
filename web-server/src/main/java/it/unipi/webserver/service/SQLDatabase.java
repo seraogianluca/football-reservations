@@ -4,8 +4,11 @@ import it.unipi.webserver.entity.Game;
 import it.unipi.webserver.entity.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -72,26 +75,20 @@ public class SQLDatabase {
                 .block();
     }
 
-    /*
-    @DeleteMapping(path="/delete/{name}")
-    public String deletePitch(@PathVariable("name") String name){
-        return this.webClientBuilder.build()
-                .delete()
-                .uri(baseUri + "/pitch/delete/" + name)
+    public String unbookGame(String gameId, String player) {
+        return database.put()
+                .uri("game/update/unbook/" + gameId + "/" + player)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
     }
 
-    @PutMapping(path="/update/{name}/{status}")
-    public Boolean updateStatus(@PathVariable ("status") Boolean status
-            , @PathVariable ("name") String name){
-        return this.webClientBuilder.build()
-                .put()
-                .uri(baseUri + "/pitch/update/" + name + "/" + status)
+    public String deleteGame(String gameId) {
+        return database.delete()
+                .uri("game/delete/" + gameId)
                 .retrieve()
-                .bodyToMono(Boolean.class)
+                .bodyToMono(String.class)
                 .block();
     }
-    */
+
 }

@@ -15,8 +15,8 @@
         </a>
         <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/games' ? 'active':''}"
            th:href="@{/home/games}"><i class="fa fa-soccer-ball-o"></i> Home</a>
-        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/match/new' ? 'active':''}"
-           th:href="@{/home/match/new}"><i class="fa fa-calendar-plus-o"></i> New match</a>
+        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/match' ? 'active':''}"
+           th:href="@{/home/match}"><i class="fa fa-calendar-plus-o"></i> New match</a>
         <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/games/search' ? 'active':''}"
            th:href="@{/home/games/search}"><i class="fa fa-fw fa-search"></i> Search matches</a>
         <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/dashboards' ? 'active':''}"

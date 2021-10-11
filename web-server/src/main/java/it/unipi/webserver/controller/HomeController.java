@@ -18,14 +18,14 @@ public class HomeController {
     @Autowired
     private SQLDatabase database;
 
-    @GetMapping(path="/match/new")
+    @GetMapping(path="/match")
     public String addMatchPage(Model model) {
         model.addAttribute("fragment", "newmatch");
         model.addAttribute("match", new Game());
         return "home";
     }
 
-    @PostMapping(path="/match/new/add")
+    @PostMapping(path="/match/create")
     public String addGame(Model model,
                           @ModelAttribute(value="match") Game match) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -35,7 +35,6 @@ public class HomeController {
                                             match.getPitchName(),
                                             match.getTime() );
 
-        System.out.println("Response: " + response);
         model.addAttribute("fragment", "newmatch");
         model.addAttribute("message", response);
         return "home";
@@ -65,7 +64,7 @@ public class HomeController {
 
     @PostMapping(path="/games/book")
     public String bookGame(Model model,
-                           @RequestParam("book") String gameId) {
+                           @RequestParam("id") String gameId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         String response = database.bookGame(gameId, username);
@@ -75,4 +74,27 @@ public class HomeController {
         return "home";
     }
 
+    @PostMapping(path = "/games/unbook")
+    public String unbookGame(Model model,
+                             @RequestParam("id") String gameId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        String response = database.unbookGame(gameId, username);
+
+        model.addAttribute("fragment", "main");
+        model.addAttribute("message", response);
+        return "home";
+    }
+
+    @PostMapping(path = "/games/delete")
+    public String deleteGame(Model model,
+                             @RequestParam("id") String gameId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        String response = database.deleteGame(gameId);
+
+        model.addAttribute("fragment", "main");
+        model.addAttribute("message", response);
+        return "home";
+    }
 }

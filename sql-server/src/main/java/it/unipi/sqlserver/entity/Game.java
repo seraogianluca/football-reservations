@@ -18,6 +18,10 @@ public class Game implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long gameId;
+
+    @Version
+    private Long version;
+
     private int time;
     private String playerManager;
     private String pitchName;

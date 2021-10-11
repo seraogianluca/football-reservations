@@ -8,35 +8,49 @@
 <body>
     <h1>Hello, <span sec:authentication="name">Bob</span></h1>
     <hr>
-    <p class="table-title">My games</p>
-    <table class="my-games">
+
+    <p th:if="${message}" th:utext="${message}"></p>
+
+    <p th:unless="${message}" class="table-title">My games</p>
+    <table th:unless="${message}" class="my-games">
         <tr>
             <th>Pitch</th>
             <th>Time</th>
             <th>Player manager</th>
             <th>Players</th>
+            <th></th>
         </tr>
         <tr th:if="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
-            <td th:text="${game.pitchName}"></td>
-            <td th:text="${game.time}"></td>
-            <td>owner</td>
-            <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
+            <form th:action="@{/home/games/delete(id=${game.gameId})}" th:method="post">
+                <td th:text="${game.pitchName}"></td>
+                <td th:text="${game.time}"></td>
+                <td>owner</td>
+                <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
+                <td>
+                    <button type="submit"><i class="fa fa-trash-o"></i></button>
+                </td>
+            </form>
         </tr>
     </table>
-
-    <p class="table-title">My reservations</p>
-    <table class="my-reservations">
+    <p th:unless="${message}" class="table-title">My reservations</p>
+    <table th:unless="${message}" class="my-reservations">
         <tr>
             <th>Pitch</th>
             <th>Time</th>
             <th>Player manager</th>
             <th>Players</th>
+            <th></th>
         </tr>
         <tr th:unless="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
-            <td th:text="${game.pitchName}"></td>
-            <td th:text="${game.time}"></td>
-            <td th:text="${game.playerManager}"></td>
-            <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
+            <form th:action="@{/home/games/unbook(id=${game.gameId})}" th:method="post">
+                <td th:text="${game.pitchName}"></td>
+                <td th:text="${game.time}"></td>
+                <td th:text="${game.playerManager}"></td>
+                <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
+                <td>
+                    <button type="submit"><i class="fa fa-calendar-times-o"></i></button>
+                </td>
+            </form>
         </tr>
     </table>
 </body>

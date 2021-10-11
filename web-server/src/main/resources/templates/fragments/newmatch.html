@@ -7,7 +7,10 @@
 <body>
     <h1>Create a new match</h1>
     <hr>
-    <form th:unless="${message}" th:action="@{/home/match/new/add}" th:object="${match}" method="post">
+
+    <p th:if="${message}" th:utext="${message}"></p>
+
+    <form th:unless="${message}" th:action="@{/home/match/create}" th:object="${match}" method="post">
         <!--<label for="manager">Player manager</label>
         <input type="text" id="manager" th:field="*{playerManager}" /> -->
         <label for="pitch">Pitch name</label>
@@ -16,7 +19,5 @@
         <input type="text" id="time" th:field="*{time}" />
         <button type="submit">Save</button>
     </form>
-
-    <h1 th:if="${message}" th:utext="${message}"></h1>
 </body>
 </html>

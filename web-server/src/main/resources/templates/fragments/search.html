@@ -8,6 +8,8 @@
     <h1>Available matches</h1>
     <hr>
 
+    <p th:if="${message}" th:text="${message}"></p>
+
     <table th:unless="${message}">
         <tr>
             <th>Pitch</th>
@@ -17,7 +19,7 @@
             <th></th>
         </tr>
         <tr th:each="game: ${games}">
-            <form th:action="@{/home/games/book(book=${game.gameId})}" th:method="post">
+            <form th:action="@{/home/games/book(id=${game.gameId})}" th:method="post">
                 <td th:text="${game.pitchName}"></td>
                 <td th:text="${game.time}"></td>
                 <td th:text="${game.playerManager}"></td>
@@ -28,7 +30,5 @@
             </form>
         </tr>
     </table>
-
-    <p th:if="${message}" th:text="${message}"></p>
 </body>
 </html>
