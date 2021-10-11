@@ -121,7 +121,11 @@ public class GameController {
     @DeleteMapping(path= "/delete/{gameId}")
     @Transactional
     public String deleteGame(@PathVariable ("gameId") Long gameId){
-        gameRepository.deleteByGameId(gameId);
-        return "Game deleted!";
+        try {
+            gameRepository.deleteByGameId(gameId);
+        } catch(ObjectOptimisticLockingFailureException e){
+            return "Sorry, something wrong occurs during deleting. Please try again.";
+        }
+        return "Match successfully deleted.";
     }
 }
