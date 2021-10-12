@@ -26,8 +26,19 @@ insert_message(GameId, Username, Message) ->
     _ -> error
   end.
 
+extract_messages([])->
+  [];
+extract_messages([H | T])->
+  {messages, _, Username, Time, Message} = H,
+  [{calendar:gregorian_seconds_to_datetime(Time),Username, Message} | extract_messages(T)].
+
 read_messages(GameId) ->
   Read = fun() ->
-    mnesia:read(GameId)
+    mnesia:read(messages, GameId)
          end,
-  mnesia:transaction(Read).
+  case mnesia:transaction(Read) of
+    {atomic, Result} -> extract_messages(Result);
+    _ -> io:format("error reading messages ~n"),
+      error
+  end.
+

@@ -24,6 +24,7 @@ handle_call(Request, _, _) ->
             Response = insert_message(GameId, Username, Message),
             {reply, Response, {}};
         {read, GameId} ->
+            io:format("sono in read"),
             Response = read_messages(GameId),
             {reply, Response, {}};
         _ ->

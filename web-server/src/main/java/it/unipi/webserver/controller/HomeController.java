@@ -1,6 +1,7 @@
 package it.unipi.webserver.controller;
 
 import it.unipi.webserver.entity.Game;
+import it.unipi.webserver.service.DashboardClient;
 import it.unipi.webserver.service.SQLDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,8 @@ import java.util.List;
 public class HomeController {
     @Autowired
     private SQLDatabase database;
+    @Autowired
+    private DashboardClient dashboardClient;
 
     @GetMapping(path="/match")
     public String addMatchPage(Model model) {
@@ -95,6 +98,15 @@ public class HomeController {
 
         model.addAttribute("fragment", "main");
         model.addAttribute("message", response);
+        return "home";
+    }
+
+    @GetMapping(path = "/dashboard/insert")
+    public String insertMessage(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        dashboardClient.insertMessage("2",username, "messaggio di prova");
+        model.addAttribute("fragment", "main");
         return "home";
     }
 }
