@@ -30,7 +30,7 @@ extract_messages([])->
   [];
 extract_messages([H | T])->
   {messages, _, Username, Time, Message} = H,
-  [{calendar:gregorian_seconds_to_datetime(Time),Username, Message} | extract_messages(T)].
+  [{calendar:gregorian_seconds_to_datetime(Time), Username, Message} | extract_messages(T)].
 
 read_messages(GameId) ->
   Read = fun() ->

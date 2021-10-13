@@ -20,7 +20,7 @@
         <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/games/search' ? 'active':''}"
            th:href="@{/home/games/search}"><i class="fa fa-fw fa-search"></i> Search matches</a>
         <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/dashboards' ? 'active':''}"
-           th:href="@{/home/dashboard/insert}"><i class="fa fa-envelope"></i> Dashboards</a>
+           th:href="@{/home/dashboard}"><i class="fa fa-envelope"></i> Dashboards</a>
         <a href="#" onclick="document.getElementById('logoutform').submit();">
             <i class="fa fa-times"></i> Logout
             <form id="logoutform" th:action="@{/logout}" method="post" type="hidden"></form>

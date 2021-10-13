@@ -1,6 +1,7 @@
 package it.unipi.webserver.controller;
 
 import it.unipi.webserver.entity.Game;
+import it.unipi.webserver.entity.Message;
 import it.unipi.webserver.service.DashboardClient;
 import it.unipi.webserver.service.SQLDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,12 +101,34 @@ public class HomeController {
         return "home";
     }
 
+    //TODO: post message
     @GetMapping(path = "/dashboard/insert")
     public String insertMessage(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        dashboardClient.insertMessage("2",username, "messaggio di prova");
+        dashboardClient.insertMessage("1", username, "messaggio di prova");
         model.addAttribute("fragment", "main");
+        return "home";
+    }
+
+    @GetMapping(path = "/dashboard")
+    public String loadDashboard(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        List<Game> games = database.browseGames(username);
+
+        model.addAttribute("fragment", "dashboard");
+        model.addAttribute("games", games);
+        return "home";
+    }
+
+    @PostMapping(path = "/dashboard/read")
+    public String readMessage(Model model,
+                              @RequestParam("id") String gameId){
+        List<Message> messages = dashboardClient.readMessages(gameId);
+
+        model.addAttribute("fragment", "dashboard");
+        model.addAttribute("messages", messages);
         return "home";
     }
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <link th:href="@{/css/fragments/dashboard.css}" rel="stylesheet" />
+    <title>Main</title>
+</head>
+<body>
+    <h1>Dashboards</h1>
+    <hr>
+
+    <p th:unless="${messages}" class="table-title">My games</p>
+    <table th:unless="${messages}" class="my-games">
+        <tr>
+            <th>Pitch</th>
+            <th>Time</th>
+            <th>Player manager</th>
+            <th>Players</th>
+            <th></th>
+        </tr>
+        <tr th:each="game: ${games}">
+            <form th:action="@{/home/dashboard/read(id=${game.gameId})}" th:method="post">
+                <td th:text="${game.pitchName}"></td>
+                <td th:text="${game.time}"></td>
+                <td th:text="${game.playerManager}"></td>
+                <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
+                <td>
+                    <button type="submit"><i class="fa fa-envelope-open"></i></button>
+                </td>
+            </form>
+        </tr>
+    </table>
+
+    <div th:if="${messages}">
+        <div th:each="elem: ${messages}">
+            <span th:text="${elem.username}"></span>
+            <span th:text="${elem.message}"></span>
+        </div>
+    </div>
+</body>
+</html>
