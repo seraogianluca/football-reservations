@@ -1,30 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
                 xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
+<head th:fragment="navbar">
     <link th:href="@{/css/fragments/navbar.css}" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <title>Navigation Bar</title>
 </head>
 <body>
-    <nav class="navbar">
-        <p class="logo">Football central</p>
-        <a style="pointer-events: none;" href="#">
-            <i class="fa fa-user-circle"></i>
-            <span sec:authentication="name">Bob</span>
-        </a>
-        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/games' ? 'active':''}"
-           th:href="@{/home/games}"><i class="fa fa-soccer-ball-o"></i> Home</a>
-        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/match' ? 'active':''}"
-           th:href="@{/home/match}"><i class="fa fa-calendar-plus-o"></i> New match</a>
-        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/games/search' ? 'active':''}"
-           th:href="@{/home/games/search}"><i class="fa fa-fw fa-search"></i> Search matches</a>
-        <a th:classappend="${#httpServletRequest.getRequestURI() == '/home/dashboards' ? 'active':''}"
-           th:href="@{/home/dashboard}"><i class="fa fa-envelope"></i> Dashboards</a>
-        <a href="#" onclick="document.getElementById('logoutform').submit();">
-            <i class="fa fa-times"></i> Logout
-            <form id="logoutform" th:action="@{/logout}" method="post" type="hidden"></form>
-        </a>
-    </nav>
+    <div class="d-flex flex-column p-2 text-white min-vh-100 bg-color">
+        <div class="navbar-brand text-center text-white text-decoration-none">
+            <span class="fs-5 d-none d-sm-inline"><i class="bi bi-shield-fill"></i> Football central</span>
+        </div>
+        <hr>
+        <nav class="nav nav-pills nav-fill align-items-sm-start mb-auto">
+            <a class="nav-link text-start text-white text-decoration-none w-100"
+               th:classappend="${#httpServletRequest.getRequestURI() == '/home/games' ? 'active':''}"
+               th:href="@{/home/games}">
+                <i class="bi bi-house"></i> Home
+            </a>
+            <a class="nav-link text-start text-white text-decoration-none w-100"
+               th:classappend="${#httpServletRequest.getRequestURI() == '/home/match' ? 'active':''}"
+               th:href="@{/home/match}">
+                <i class="bi bi-calendar-plus"></i> New match
+            </a>
+            <a class="nav-link text-start text-white text-decoration-none w-100"
+               th:classappend="${#httpServletRequest.getRequestURI() == '/home/games/search' ? 'active':''}"
+               th:href="@{/home/games/search}">
+                <i class="bi bi-search"></i> Search matches
+            </a>
+            <a class="nav-link text-start text-white text-decoration-none w-100"
+               th:classappend="${#httpServletRequest.getRequestURI() == '/home/dashboard' ? 'active':''}"
+               th:href="@{/home/dashboard}">
+                <i class="bi bi-chat-left-dots"></i> Dashboard
+            </a>
+            <a class="nav-link text-start text-white text-decoration-none w-100"
+               href="#" onclick="document.getElementById('logoutform').submit();">
+                <i class="bi bi-power"></i> Logout
+                <form id="logoutform" th:action="@{/logout}" method="post" type="hidden"></form>
+            </a>
+        </nav>
+        <div class="align-self-end w-100">
+            <hr class="mb-0">
+            <a class="nav-link text-white text-decoration-none"
+               style="pointer-events: none;" href="#">
+                <i class="bi bi-person-circle"></i>
+                <span sec:authentication="name">Bob</span>
+            </a>
+        </div>
+    </div>
 </body>
 </html>

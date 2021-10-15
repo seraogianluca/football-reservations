@@ -1,51 +1,15 @@
-.navbar {
-    top: 0;
-    left: 0;
-    margin: 0;
-    padding: 0;
-    position: fixed;
-    z-index: 1;
-
-    min-width: 25%;
-    height: 100%;
-    /*overflow: auto;*/
-
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    /*justify-content: center;*/
-
-    background-color: #C1AC95;
-}
-
-a {
-    min-width: 84%;
-    padding: 8%;
-
-    font-family: 'Open Sans', sans-serif;
-    font-size: 24px;
-    font-weight: 300;
-    color: white;
-    text-decoration: none;
-    text-align: left;
-}
-
-a:hover {
-    background-color: #C9E4C5;
-}
-
-i {
-    font-size: 24px;
+.bg-color {
+    background-color: #C1AC95 !important;
 }
 
 .active {
-    background-color: #B5CDA3;
+    background-color: #B5CDA3 !important;
 }
 
-.logo {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 24px;
-    font-weight: 300;
-    text-align: left;
-    color: white;
+a {
+    font-size: 18px;
+}
+
+a:hover {
+    background-color: #C9E4C5 !important;
 }

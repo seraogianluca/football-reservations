@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <link th:href="@{/css/fragments/dashboard.css}" rel="stylesheet" />
+<head th:fragment="dashboard">
     <title>Main</title>
 </head>
 <body>
     <h1>Dashboards</h1>
     <hr>
 
-    <p th:unless="${messages}" class="table-title">My games</p>
-    <table th:unless="${messages}" class="my-games">
+    <p th:unless="${messages}" class="lead">My games</p>
+    <table class="table" th:unless="${messages}">
         <tr>
             <th>Pitch</th>
             <th>Time</th>
@@ -18,14 +17,25 @@
             <th>Players</th>
             <th></th>
         </tr>
-        <tr th:each="game: ${games}">
+        <tr th:if="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
+            <form th:action="@{/home/dashboard/read(id=${game.gameId})}" th:method="post">
+                <td th:text="${game.pitchName}"></td>
+                <td th:text="${game.time}"></td>
+                <td><span class="badge rounded-pill bg-info text-dark">Owner</span></td>
+                <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
+                <td>
+                    <button class="btn btn-outline-warning" type="submit"><i class="bi bi-chat-left-text"></i></button>
+                </td>
+            </form>
+        </tr>
+        <tr th:unless="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
             <form th:action="@{/home/dashboard/read(id=${game.gameId})}" th:method="post">
                 <td th:text="${game.pitchName}"></td>
                 <td th:text="${game.time}"></td>
                 <td th:text="${game.playerManager}"></td>
                 <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
                 <td>
-                    <button type="submit"><i class="fa fa-envelope-open"></i></button>
+                    <button class="btn btn-outline-warning" type="submit"><i class="bi bi-chat-left-text"></i></button>
                 </td>
             </form>
         </tr>
