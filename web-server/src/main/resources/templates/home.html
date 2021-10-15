@@ -20,7 +20,7 @@
     <div class="row g-0">
         <div class="col-2" th:insert="fragments/navbar.html"></div>
         <div class="col-10 content">
-         <div class="col p-5" th:if="${fragment}" th:insert="'fragments/' + ${fragment}"></div>
+         <div class="col p-5 vh-100 overflow-auto" th:if="${fragment}" th:insert="'fragments/' + ${fragment}"></div>
         </div>
     </div>
 </body>

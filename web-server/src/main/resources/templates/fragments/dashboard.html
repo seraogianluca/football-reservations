@@ -2,50 +2,73 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="dashboard">
-    <title>Main</title>
+    <link th:href="@{/css/fragments/dashboard.css}" rel="stylesheet" />
+    <title>Dashboard</title>
 </head>
-<body>
+<body onload="autoscroll()">
+    <script>
+        function autoscroll() {
+            var elem = document.getElementById('chat-window');
+            elem.scrollTop = elem.scrollHeight;
+        }
+    </script>
+
     <h1>Dashboards</h1>
     <hr>
 
-    <p th:unless="${messages}" class="lead">My games</p>
-    <table class="table" th:unless="${messages}">
-        <tr>
-            <th>Pitch</th>
-            <th>Time</th>
-            <th>Player manager</th>
-            <th>Players</th>
-            <th></th>
-        </tr>
-        <tr th:if="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
-            <form th:action="@{/home/dashboard/read(id=${game.gameId})}" th:method="post">
-                <td th:text="${game.pitchName}"></td>
-                <td th:text="${game.time}"></td>
-                <td><span class="badge rounded-pill bg-info text-dark">Owner</span></td>
-                <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
-                <td>
-                    <button class="btn btn-outline-warning" type="submit"><i class="bi bi-chat-left-text"></i></button>
-                </td>
-            </form>
-        </tr>
-        <tr th:unless="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
-            <form th:action="@{/home/dashboard/read(id=${game.gameId})}" th:method="post">
-                <td th:text="${game.pitchName}"></td>
-                <td th:text="${game.time}"></td>
-                <td th:text="${game.playerManager}"></td>
-                <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
-                <td>
-                    <button class="btn btn-outline-warning" type="submit"><i class="bi bi-chat-left-text"></i></button>
-                </td>
-            </form>
-        </tr>
-    </table>
+    <div class="row h-50">
+        <div class="col-4">
+            <div class="card rounded-3">
+                <div class="card-header">
+                    <h5 class="card-title">Games</h5>
+                </div>
+                <div class="card-body d-inline-flex flex-column align-items-start">
+                    <table class="table">
+                        <tr>
+                            <th>Pitch</th>
+                            <th>Time</th>
+                            <th></th>
+                        </tr>
+                        <tr th:each="game: ${games}">
+                            <form th:action="@{/home/dashboard/read(id=${game.gameId})}" th:method="post">
+                                <td th:text="${game.pitchName}"></td>
+                                <td th:text="${game.time}"></td>
+                                <td>
+                                    <button class="btn btn-outline-warning"
+                                            th:classappend="${activeGame} == ${game.gameId} ? 'active-chat':''"
+                                            type="submit"><i class="bi bi-chat-left-text"></i></button>
+                                </td>
+                            </form>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <div th:if="${messages}">
-        <div th:each="elem: ${messages}">
-            <span th:text="${elem.username}"></span>
-            <span th:text="${elem.message}"></span>
+        <div class="col-8" th:if="${messages}">
+            <div class="card rounded-3 chat">
+                <div class="card-header">
+                    <h5 class="card-title">Chat</h5>
+                </div>
+                <div class="card-body d-inline-flex flex-column align-items-start overflow-auto" id="chat-window">
+                    <div class="d-flex flex-column rounded-3 bg-message text-white mb-3 p-2" th:each="elem: ${messages}"
+                         th:classappend="${#authentication.name} == ${elem.username} ? 'align-self-end bg-message-self':''">
+                        <span><small><strong th:utext="${elem.username}"></strong></small></span>
+                        <span th:utext="${elem.message}"></span>
+                    </div>
+                </div>
+                <div class="card-footer p-3">
+                    <form th:action="@{/home/dashboard/insert(id=${activeGame})}" th:object="${newmessage}" th:method="post">
+                        <input type="hidden" th:field="*{username}" th:value="${#authentication.name}">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Write a message..." aria-label="Message" aria-describedby="message" th:field="*{message}" required>
+                            <button class="btn btn-outline-secondary" type="submit" id="message"><i class="bi bi-cursor"></i> Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+
 </body>
 </html>

@@ -76,9 +76,8 @@ public class DashboardClient {
                 result = new ArrayList<Message>();
                 for (OtpErlangObject otpErlangObject : resultList) {
                     OtpErlangTuple tuple = (OtpErlangTuple)otpErlangObject;
-                    Message message = new Message(tuple.elementAt(1).toString(),
-                                                    tuple.elementAt(2).toString());
-                    System.out.println("[DBG] message: " + message.getMessage());
+                    Message message = new Message(tuple.elementAt(1).toString().substring(1, tuple.elementAt(1).toString().length()-1),
+                                                    tuple.elementAt(2).toString().substring(1, tuple.elementAt(2).toString().length()-1));
                     result.add(message);
                 }
             }

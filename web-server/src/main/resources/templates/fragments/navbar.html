@@ -13,7 +13,7 @@
         <hr>
         <nav class="nav nav-pills nav-fill align-items-sm-start mb-auto">
             <a class="nav-link text-start text-white text-decoration-none w-100"
-               th:classappend="${#httpServletRequest.getRequestURI() == '/home/games' ? 'active':''}"
+               th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(),'/home/games') ? 'active':''}"
                th:href="@{/home/games}">
                 <i class="bi bi-house"></i> Home
             </a>
@@ -23,12 +23,12 @@
                 <i class="bi bi-calendar-plus"></i> New match
             </a>
             <a class="nav-link text-start text-white text-decoration-none w-100"
-               th:classappend="${#httpServletRequest.getRequestURI() == '/home/games/search' ? 'active':''}"
-               th:href="@{/home/games/search}">
+               th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(),'/home/search') ? 'active':''}"
+               th:href="@{/home/search}">
                 <i class="bi bi-search"></i> Search matches
             </a>
             <a class="nav-link text-start text-white text-decoration-none w-100"
-               th:classappend="${#httpServletRequest.getRequestURI() == '/home/dashboard' ? 'active':''}"
+               th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(),'/home/dashboard') ? 'active':''}"
                th:href="@{/home/dashboard}">
                 <i class="bi bi-chat-left-dots"></i> Dashboard
             </a>

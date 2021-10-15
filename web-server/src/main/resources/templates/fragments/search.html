@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="search">
-    <title>Main</title>
+    <title>Search</title>
 </head>
 <body>
     <h1>Available matches</h1>
@@ -18,7 +18,7 @@
             <th></th>
         </tr>
         <tr th:each="game: ${games}">
-            <form th:action="@{/home/games/book(id=${game.gameId})}" th:method="post">
+            <form th:action="@{/home/search/book(id=${game.gameId})}" th:method="post">
                 <td th:text="${game.pitchName}"></td>
                 <td th:text="${game.time}"></td>
                 <td th:text="${game.playerManager}"></td>
