@@ -114,6 +114,7 @@ public class HomeController {
 
         model.addAttribute("fragment", "main");
         model.addAttribute("message", response);
+        model.addAttribute("games", games);
         return "home";
     }
 
