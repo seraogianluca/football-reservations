@@ -1,0 +1,1 @@
+-record(messages, {game_id, username, time, message}).

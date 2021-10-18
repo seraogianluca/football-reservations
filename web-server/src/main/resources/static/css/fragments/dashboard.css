@@ -1,0 +1,17 @@
+.bg-message {
+   background-color: #C1AC95;
+}
+
+.bg-message-self {
+    background-color: #C9E4C5;
+    color: #5E454B !important;
+}
+
+.chat {
+    height: 600px;
+}
+
+.active-chat {
+    background-color: #ffc107;
+    color: #000;
+}

@@ -1,0 +1,15 @@
+.bg-color {
+    background-color: #C1AC95 !important;
+}
+
+.active {
+    background-color: #B5CDA3 !important;
+}
+
+a {
+    font-size: 18px;
+}
+
+a:hover {
+    background-color: #C9E4C5 !important;
+}

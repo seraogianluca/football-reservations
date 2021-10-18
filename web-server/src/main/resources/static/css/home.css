@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@800&family=Open+Sans:wght@300;500&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.0/font/bootstrap-icons.css");
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+}
+
+.content {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    background-color: #FAEBE0;
+    color: #5E454B;
+}
+
+.bg-info {
+    background-color: #B5CDA3 !important;
+}

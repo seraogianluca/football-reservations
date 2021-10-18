@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="search">
+    <title>Search</title>
+</head>
+<body>
+    <h1>Available matches</h1>
+    <hr>
+
+    <div class="alert alert-success" role="alert" th:if="${message}" th:text="${message}"></div>
+
+    <table class="table" th:unless="${message}">
+        <tr>
+            <th>Pitch</th>
+            <th>Time</th>
+            <th>Player manager</th>
+            <th>Players</th>
+            <th></th>
+        </tr>
+        <tr th:each="game: ${games}">
+            <form th:action="@{/home/search/book(id=${game.gameId})}" th:method="post">
+                <td th:text="${game.pitchName}"></td>
+                <td th:text="${game.time}"></td>
+                <td th:text="${game.playerManager}"></td>
+                <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
+                <td>
+                    <button class="btn btn-outline-success" type="submit"><i class="bi bi-calendar-check"></i></button>
+                </td>
+            </form>
+        </tr>
+    </table>
+</body>
+</html>
