@@ -131,6 +131,7 @@ public class HomeController {
         model.addAttribute("fragment", "dashboard");
         model.addAttribute("messages", messages);
         model.addAttribute("newmessage", new Message());
+        model.addAttribute("activeGame", gameId);
         model.addAttribute("games", games);
         return "home";
     }
