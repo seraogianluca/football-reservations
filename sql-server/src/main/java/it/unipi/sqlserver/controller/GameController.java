@@ -101,7 +101,7 @@ public class GameController {
     public String unBookGame(@PathVariable("gameId") Long gameId,
                            @PathVariable ("playerName") String playerName){
         try {
-            Game game = gameRepository.findGameByGameId(gameId);;
+            Game game = gameRepository.findGameByGameId(gameId);
             Player player = playerRepository.findPlayerByUserName(playerName);
 
             if(playerName.equals("prova")) {

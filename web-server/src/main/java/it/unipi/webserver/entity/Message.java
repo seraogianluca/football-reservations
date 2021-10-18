@@ -12,7 +12,6 @@ import lombok.ToString;
 public class Message {
     private String username;
     private String message;
-    //TODO: timestamp
 
     public Message(String username, String message) {
         this.username = username;
