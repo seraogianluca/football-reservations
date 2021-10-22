@@ -1,8 +1,8 @@
-package it.unipi.sqlserver.repository;
+package it.unipi.webserver.repository;
 
 
-import it.unipi.sqlserver.entity.Game;
-import org.springframework.data.jpa.repository.*;
+import it.unipi.webserver.entity.Game;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface GameRepository extends JpaRepository<Game, Long> {

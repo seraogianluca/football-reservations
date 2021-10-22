@@ -2,93 +2,91 @@ package it.unipi.webserver.service;
 
 import it.unipi.webserver.entity.Game;
 import it.unipi.webserver.entity.Player;
+import it.unipi.webserver.repository.GameRepository;
+import it.unipi.webserver.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ResponseStatusException;
-import reactor.core.publisher.Mono;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SQLDatabase {
-
-    private final WebClient database;
-
     @Autowired
-    public SQLDatabase() {
-        this.database = WebClient.builder().baseUrl("http://localhost:8080/").build();
-    }
+    private PlayerRepository playerRepository;
+    @Autowired
+    private GameRepository gameRepository;
 
-    //Add player
-    //Add match
-    //Book game
-
-    /* GET PLAYER */
     public Player getPlayer(String username) {
-        String requestPath = "player/get/" + username;
-        return database.get()
-                .uri(requestPath)
-                .retrieve()
-                .bodyToMono(Player.class)
-                .block();
+        return playerRepository.findPlayerByUserName(username);
     }
 
-    /* ADD MATCH */
     public String addGame(String playerManager, String pitchName, int time) {
-        String requestPath = playerManager + "/" + pitchName + "/" + time;
-        return database.post()
-                .uri("game/add/" + requestPath)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        Player manager = playerRepository.findPlayerByUserName(playerManager);
+        Game game = new Game(manager, pitchName, time);
+        gameRepository.save(game);
+        return "Match successfully created.";
     }
 
-    /* FIND ALL MY GAMES */
     public List<Game> browseGames(String username) {
-        return database.get()
-                .uri("game/get/user/" + username)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Game>>() {
-                })
-                .block();
+        List<Game> games = gameRepository.findAll();
+        Player player = playerRepository.findPlayerByUserName(username);
+        games.removeIf(game -> !(game.isPlayerManager(username) ||
+                game.participates(player)));
+        return games;
     }
 
-    /* FIND BOOKABLE GAMES */
     public List<Game> bookableGames(String username) {
-        return database.get()
-                .uri("game/get/all/" + username)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Game>>() {
-                })
-                .block();
+        List<Game> games = gameRepository.findAll();
+        Player player = playerRepository.findPlayerByUserName(username);
+        games.removeIf(game -> game.isPlayerManager(username) ||
+                game.participates(player));
+        return games;
     }
 
-    /* BOOK A GAME */
-    public String bookGame(String gameId, String player) {
-        return database.put()
-                .uri("game/update/" + gameId + "/" + player)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+    public String bookGame(Long gameId, String username) {
+        try {
+            Player player = playerRepository.findPlayerByUserName(username);
+            Game game = gameRepository.findGameByGameId(gameId);
+
+            if(game.getNumberOfPlayers() == 10) {
+                return "Sorry, this match is full.";
+            }
+
+            game.addPlayer(player);
+            gameRepository.save(game);
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return "Sorry, something wrong occurs during booking. Please try again.";
+        }
+
+        return "Match booked successfully.";
     }
 
-    public String unbookGame(String gameId, String player) {
-        return database.put()
-                .uri("game/update/unbook/" + gameId + "/" + player)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+    public String unbookGame(Long gameId, String username) {
+        try {
+            Player player = playerRepository.findPlayerByUserName(username);
+            Game game = gameRepository.findGameByGameId(gameId);
+            game.removePlayer(player);
+            gameRepository.save(game);
+        } catch(ObjectOptimisticLockingFailureException e) {
+            return "Sorry, something wrong occurs during unbooking. Please try again.";
+        }
+
+        return "Match unbooked successfully.";
     }
 
-    public String deleteGame(String gameId) {
-        return database.delete()
-                .uri("game/delete/" + gameId)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+    @Transactional
+    public String deleteGame(Long gameId) {
+        try {
+            gameRepository.deleteByGameId(gameId);
+        } catch(ObjectOptimisticLockingFailureException e){
+            return "Sorry, something wrong occurs during deleting. Please try again.";
+        }
+        return "Match successfully deleted.";
     }
 
 }

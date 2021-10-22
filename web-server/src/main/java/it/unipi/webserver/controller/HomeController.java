@@ -5,7 +5,6 @@ import it.unipi.webserver.entity.Message;
 import it.unipi.webserver.entity.MyGames;
 import it.unipi.webserver.service.DashboardClient;
 import it.unipi.webserver.service.SQLDatabase;
-import jdk.nashorn.internal.ir.RuntimeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,7 +66,7 @@ public class HomeController {
     }
 
     @PostMapping(path = "/games/unbook")
-    public String unbookGame(Model model, @RequestParam("id") String gameId) {
+    public String unbookGame(Model model, @RequestParam("id") Long gameId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         String response = database.unbookGame(gameId, username);
@@ -92,7 +91,7 @@ public class HomeController {
     }
 
     @PostMapping(path="/search/book")
-    public String bookGame(Model model, @RequestParam("id") String gameId) {
+    public String bookGame(Model model, @RequestParam("id") Long gameId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         String response = database.bookGame(gameId, username);
@@ -105,7 +104,7 @@ public class HomeController {
     }
 
     @PostMapping(path = "/games/delete")
-    public String deleteGame(Model model, @RequestParam("id") String gameId) {
+    public String deleteGame(Model model, @RequestParam("id") Long gameId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         String response = database.deleteGame(gameId);
