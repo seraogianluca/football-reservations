@@ -35,7 +35,6 @@ public class Game implements Serializable {
     public Game(){
         this.players = new ArrayList<>();
     }
-
     public Game(Player playerManager, String pitchName, int time) {
         this.playerManager = playerManager.getUserName();
         this.time = time;
@@ -43,7 +42,6 @@ public class Game implements Serializable {
         this.players = new ArrayList<>();
         this.players.add(playerManager);
     }
-
     public void addPlayer(Player p){
         players.add(p);
     }

@@ -26,6 +26,5 @@ public class Player implements Serializable {
     public Player(String name, String password){
         this.userName = name;
         this.password = password;
-
     }
 }
