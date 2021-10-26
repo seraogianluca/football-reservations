@@ -15,103 +15,12 @@ public class DashboardClient {
     private final String serverName = "dashboard_server";
 
     public DashboardClient(){
-        String nodeName = "dashboard_client@localhost";
-        String mBoxName = "dashboard_client";
-        String cookie = "dashboard";
         try{
-            OtpNode node = new OtpNode(nodeName, cookie);
-            mailBox = node.createMbox(mBoxName);
-        }catch(IOException ex){
+            OtpNode node = new OtpNode("dashboard_client@localhost", "dashboard");
+            mailBox = node.createMbox("dashboard_client");
+        }catch(IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    public boolean insertMessage(String gameId, String username, String message){
-        OtpErlangTuple request = new OtpErlangTuple(new OtpErlangObject[] {
-                new OtpErlangAtom("$gen_call"),
-                new OtpErlangTuple(new OtpErlangObject[] {
-                        this.mailBox.self(),
-                        new OtpErlangAtom("nil")
-                }),
-                new OtpErlangTuple(new OtpErlangObject[] {
-                        new OtpErlangAtom("insert"),
-                        new OtpErlangString(gameId),
-                        new OtpErlangString(username),
-                        new OtpErlangString(message)
-                })
-        });
-
-        mailBox.send(serverName, serverNodeName, request);
-
-        try {
-            OtpErlangTuple response = (OtpErlangTuple)mailBox.receive(5000);
-            String result = ((OtpErlangAtom) response.elementAt(1)).atomValue();
-            return result.compareTo("success") == 0;
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return false;
-    }
-
-    public List<Message> readMessages(String gameId) {
-        OtpErlangTuple request = new OtpErlangTuple(new OtpErlangObject[] {
-                new OtpErlangAtom("$gen_call"),
-                new OtpErlangTuple(new OtpErlangObject[] {
-                        this.mailBox.self(),
-                        new OtpErlangAtom("nil")
-                }),
-                new OtpErlangTuple(new OtpErlangObject[] {
-                        new OtpErlangAtom("read"),
-                        new OtpErlangString(gameId)
-                })
-        });
-
-        mailBox.send(serverName, serverNodeName, request);
-
-        List<Message> result = null;
-        try {
-            OtpErlangTuple response = (OtpErlangTuple)mailBox.receive(5000);
-            if (response.elementAt(1) instanceof OtpErlangList) {
-                OtpErlangList resultList = (OtpErlangList)response.elementAt(1);
-                result = new ArrayList<Message>();
-                for (OtpErlangObject otpErlangObject : resultList) {
-                    OtpErlangTuple tuple = (OtpErlangTuple)otpErlangObject;
-                    Message message = new Message(
-                            tuple.elementAt(1).toString().substring(1, tuple.elementAt(1).toString().length()-1),
-                            tuple.elementAt(2).toString().substring(1, tuple.elementAt(2).toString().length()-1),
-                            extractTimestamp((OtpErlangTuple)tuple.elementAt(0)));
-                    result.add(message);
-                }
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return result;
-    }
-
-    public boolean deleteMessages(String gameId) {
-        OtpErlangTuple request = new OtpErlangTuple(new OtpErlangObject[] {
-                new OtpErlangAtom("$gen_call"),
-                new OtpErlangTuple(new OtpErlangObject[] {
-                        this.mailBox.self(),
-                        new OtpErlangAtom("nil")
-                }),
-                new OtpErlangTuple(new OtpErlangObject[] {
-                        new OtpErlangAtom("delete"),
-                        new OtpErlangString(gameId)
-                })
-        });
-
-        mailBox.send(serverName, serverNodeName, request);
-
-        try {
-            OtpErlangTuple response = (OtpErlangTuple)mailBox.receive(5000);
-            String result = ((OtpErlangAtom) response.elementAt(1)).atomValue();
-            return result.compareTo("success") == 0;
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return false;
     }
 
     private String extractTimestamp(OtpErlangTuple tuple) {
@@ -124,4 +33,81 @@ public class DashboardClient {
                 time.elementAt(0).toString() + ":" +
                 time.elementAt(1).toString();
     }
+
+    private void sendRequest(OtpErlangTuple requestBody) {
+        OtpErlangTuple request = new OtpErlangTuple(new OtpErlangObject[] {
+                new OtpErlangAtom("$gen_call"),
+                new OtpErlangTuple(new OtpErlangObject[] {
+                        this.mailBox.self(),
+                        new OtpErlangAtom("nil")
+                }),
+                requestBody
+        });
+
+        mailBox.send(serverName, serverNodeName, request);
+    }
+
+    private OtpErlangTuple receiveResponse() {
+        try {
+            return (OtpErlangTuple)mailBox.receive(5000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean insertMessage(String gameId, String username, String message){
+         sendRequest(new OtpErlangTuple(new OtpErlangObject[] {
+                        new OtpErlangAtom("insert"),
+                        new OtpErlangString(gameId),
+                        new OtpErlangString(username),
+                        new OtpErlangString(message)}));
+
+        OtpErlangTuple response = receiveResponse();
+        if(response == null) {
+            return false;
+        }
+        String result = ((OtpErlangAtom)response.elementAt(1)).atomValue();
+        return result.compareTo("success") == 0;
+    }
+
+    public boolean deleteMessages(String gameId) {
+        sendRequest(new OtpErlangTuple(new OtpErlangObject[] {
+                new OtpErlangAtom("delete"),
+                new OtpErlangString(gameId)}));
+
+        OtpErlangTuple response = receiveResponse();
+        if(response == null) {
+            return false;
+        }
+        String result = ((OtpErlangAtom)response.elementAt(1)).atomValue();
+        return result.compareTo("success") == 0;
+    }
+
+    public List<Message> readMessages(String gameId) {
+        sendRequest(new OtpErlangTuple(new OtpErlangObject[] {
+                        new OtpErlangAtom("read"),
+                        new OtpErlangString(gameId)}));
+
+        OtpErlangTuple response = receiveResponse();
+        List<Message> result = new ArrayList<Message>();
+        if(response == null) {
+            return result;
+        }
+
+        if (response.elementAt(1) instanceof OtpErlangList) {
+            OtpErlangList resultList = (OtpErlangList)response.elementAt(1);
+            for (OtpErlangObject otpErlangObject : resultList) {
+                OtpErlangTuple tuple = (OtpErlangTuple)otpErlangObject;
+                Message message = new Message(
+                        tuple.elementAt(1).toString().substring(1, tuple.elementAt(1).toString().length()-1),
+                        tuple.elementAt(2).toString().substring(1, tuple.elementAt(2).toString().length()-1),
+                        extractTimestamp((OtpErlangTuple)tuple.elementAt(0)));
+                result.add(message);
+            }
+        }
+
+        return result;
+    }
+
 }

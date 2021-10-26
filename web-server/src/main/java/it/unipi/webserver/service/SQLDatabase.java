@@ -27,11 +27,15 @@ public class SQLDatabase {
         return playerRepository.findPlayerByUserName(username);
     }
 
-    public String addGame(String playerManager, String pitchName, int time) {
-        Player manager = playerRepository.findPlayerByUserName(playerManager);
-        Game game = new Game(manager, pitchName, time);
-        gameRepository.save(game);
-        return "Match successfully created.";
+    public boolean addGame(String playerManager, String pitchName, int time) {
+        try {
+            Player manager = playerRepository.findPlayerByUserName(playerManager);
+            Game game = new Game(manager, pitchName, time);
+            gameRepository.save(game);
+        } catch(Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public List<Game> browseGames(String username) {
@@ -50,52 +54,48 @@ public class SQLDatabase {
         return games;
     }
 
-    public String bookGame(Long gameId, String username) {
+    public boolean bookGame(Long gameId, String username) {
         try {
             Player player = playerRepository.findPlayerByUserName(username);
             Game game = gameRepository.findGameByGameId(gameId);
 
             if(game.getNumberOfPlayers() == 10) {
-                return "Sorry, this match is full.";
+                return false;
             }
 
             game.addPlayer(player);
             gameRepository.save(game);
         } catch(ObjectOptimisticLockingFailureException e) {
-            return "Sorry, something wrong occurs during booking. Please try again.";
+            return false;
         }
-
-        return "Match booked successfully.";
+        return true;
     }
 
-    public String unbookGame(Long gameId, String username) {
+    public boolean unbookGame(Long gameId, String username) {
         try {
             Player player = playerRepository.findPlayerByUserName(username);
             Game game = gameRepository.findGameByGameId(gameId);
             game.removePlayer(player);
             gameRepository.save(game);
         } catch(ObjectOptimisticLockingFailureException e) {
-            return "Sorry, something wrong occurs during unbooking. Please try again.";
+            return false;
         }
-
-        return "Match unbooked successfully.";
+        return true;
     }
 
-    public String deleteGame(Long gameId) {
+    public boolean deleteGame(Long gameId) {
         try {
             Game game = gameRepository.findGameByGameId(gameId);
             deleteGame(game);
-
             for(Player p: game.getPlayers()) {
                 if(!game.isPlayerManager(p.getUserName())) {
                     postNotification(p.getUserName(), "Match " + game + " deleted.");
                 }
             }
         } catch(ObjectOptimisticLockingFailureException e) {
-            return "Sorry, something wrong occurs during deleting. Please try again.";
+            return false;
         }
-
-        return "Match successfully deleted.";
+        return true;
     }
 
     @Transactional
@@ -117,9 +117,13 @@ public class SQLDatabase {
     }
 
     @Transactional
-    public String deleteNotification(Long noticeId){
-        noticeRepository.deleteByNoticeId(noticeId);
-        return "Notification successfully deleted.";
+    public boolean deleteNotification(Long noticeId) {
+        try {
+            noticeRepository.deleteByNoticeId(noticeId);
+        } catch(Exception e) {
+            return false;
+        }
+        return true;
     }
 
 }

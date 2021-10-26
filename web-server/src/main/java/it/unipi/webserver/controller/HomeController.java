@@ -25,7 +25,12 @@ public class HomeController {
     @Autowired
     private MyGames games;
 
-    private void updateGame(String username) {
+    private String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
+
+    private void loadGames(String username) {
         games.clear();
         games.addAll(database.browseGames(username));
     }
@@ -33,6 +38,30 @@ public class HomeController {
     private void loadNotifications(Model model, String username) {
         List<Notice> notices = database.loadNotifications(username);
         model.addAttribute("notices", notices);
+    }
+
+    private void setUiResponse(Model model, String msg) {
+        model.addAttribute("message", msg);
+    }
+
+    private void loadMainPage(Model model, String username) {
+        loadGames(username);
+        loadNotifications(model, username);
+        model.addAttribute("fragment", "main");
+        model.addAttribute("games", games);
+    }
+
+    private void loadDashboard(Model model, String username) {
+        loadGames(username);
+        model.addAttribute("fragment", "dashboard");
+        model.addAttribute("games", games);
+    }
+
+    private void loadMessages(Model model, String gameId) {
+        List<Message> messages = dashboardClient.readMessages(gameId);
+        model.addAttribute("messages", messages);
+        model.addAttribute("newmessage", new Message());
+        model.addAttribute("activeGame", gameId);
     }
 
     @GetMapping(path="/match")
@@ -43,87 +72,92 @@ public class HomeController {
     }
 
     @PostMapping(path="/match/create")
-    public String addGame(Model model,
-                          @ModelAttribute(value="match") Game match) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+    public String addGame(Model model, @ModelAttribute(value="match") Game match) {
+        String username = getUsername();
 
-        String response = database.addGame( username,
-                                            match.getPitchName(),
-                                            match.getTime() );
-        games.clear();
-        games.addAll(database.browseGames(username));
+        if(!database.addGame(username, match.getPitchName(), match.getTime())) {
+            setUiResponse(model, "Sorry, something wrong occurs. Please try again.");
+        } else {
+            setUiResponse(model, "Match successfully created.");
+        }
 
+        loadGames(username);
         model.addAttribute("fragment", "newmatch");
-        model.addAttribute("message", response);
         return "home";
     }
 
     @GetMapping(path="/games")
     public String browseMyGames(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        loadMainPage(model, getUsername());
+        return "home";
+    }
 
-        updateGame(username);
-        loadNotifications(model, username);
-
-        model.addAttribute("fragment", "main");
+    @GetMapping(path="/search")
+    public String browseBookableGames(Model model) {
+        String username = getUsername();
+        List<Game> games = database.bookableGames(username);
+        model.addAttribute("fragment", "search");
         model.addAttribute("games", games);
         return "home";
     }
 
     @PostMapping(path = "/games/unbook")
     public String unbookGame(Model model, @RequestParam("id") Long gameId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        String response = database.unbookGame(gameId, username);
+        String username = getUsername();
 
-        updateGame(username);
-        loadNotifications(model, username);
+        if(!database.unbookGame(gameId, username)) {
+            setUiResponse(model, "Sorry, something wrong occurs during unbooking. Please try again.");
+        } else {
+            setUiResponse(model, "Match unbooked successfully.");
+        }
 
-        model.addAttribute("fragment", "main");
-        model.addAttribute("message", response);
-        model.addAttribute("games", games);
-        return "home";
-    }
-
-    @GetMapping(path="/search")
-    public String browseBookableGames(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        List<Game> games = database.bookableGames(username);
-
-        model.addAttribute("fragment", "search");
-        model.addAttribute("games", games);
+        loadMainPage(model, username);
         return "home";
     }
 
     @PostMapping(path="/search/book")
     public String bookGame(Model model, @RequestParam("id") Long gameId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        String response = database.bookGame(gameId, username);
+        String username = getUsername();
 
-        updateGame(username);
+        if(!database.bookGame(gameId, username)) {
+            setUiResponse(model, "Sorry, something wrong occurs during booking or the match is full. Please try again.");
+        } else {
+            setUiResponse(model, "Match successfully booked.");
+        }
 
+        loadGames(username);
         model.addAttribute("fragment", "search");
-        model.addAttribute("message", response);
         return "home";
     }
 
     @PostMapping(path = "/games/delete")
     public String deleteGame(Model model, @RequestParam("id") Long gameId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        String response = database.deleteGame(gameId);
-        dashboardClient.deleteMessages(Long.toString(gameId));
+        if(database.deleteGame(gameId)) {
+            dashboardClient.deleteMessages(Long.toString(gameId));
+            setUiResponse(model,"Match successfully deleted.");
+        } else {
+            setUiResponse(model,"Sorry, something wrong occurs during deleting. Please try again.");
+        }
 
-        updateGame(username);
-        loadNotifications(model, username);
+        loadMainPage(model, getUsername());
+        return "home";
+    }
 
-        model.addAttribute("fragment", "main");
-        model.addAttribute("message", response);
-        model.addAttribute("games", games);
+    @PostMapping(path="/notice/delete")
+    public String deleteNotifications(Model model, @RequestParam("id") Long noticeId){
+        if(database.deleteNotification(noticeId)) {
+            setUiResponse(model, "Notification successfully deleted.");
+        } else {
+            setUiResponse(model, "Sorry, something wrong occurs. Please try again.");
+        }
+
+        loadMainPage(model, getUsername());
+        return "home";
+    }
+
+    @GetMapping(path = "/dashboard")
+    public String loadDashboard(Model model) {
+        loadDashboard(model, getUsername());
         return "home";
     }
 
@@ -131,54 +165,17 @@ public class HomeController {
     public String insertMessage(Model model,
                                 @ModelAttribute("newmessage") Message msg,
                                 @RequestParam("id") String gameId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        dashboardClient.insertMessage(gameId, username, msg.getMessage());
-        List<Message> messages = dashboardClient.readMessages(gameId);
-
-        model.addAttribute("fragment", "dashboard");
-        model.addAttribute("messages", messages);
-        model.addAttribute("newmessage", new Message());
-        model.addAttribute("activeGame", gameId);
-        model.addAttribute("games", games);
-        return "home";
-    }
-
-    @GetMapping(path = "/dashboard")
-    public String loadDashboard(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        List<Game> games = database.browseGames(username);
-
-        model.addAttribute("fragment", "dashboard");
-        model.addAttribute("games", games);
+        dashboardClient.insertMessage(gameId, getUsername(), msg.getMessage());
+        loadMessages(model, gameId);
+        loadDashboard(model);
         return "home";
     }
 
     @PostMapping(path = "/dashboard/read")
     public String readMessage(Model model, @RequestParam("id") String gameId){
-        List<Message> messages = dashboardClient.readMessages(gameId);
-
-        model.addAttribute("fragment", "dashboard");
-        model.addAttribute("messages", messages);
-        model.addAttribute("newmessage", new Message());
-        model.addAttribute("activeGame", gameId);
-        model.addAttribute("games", games);
+        loadMessages(model, gameId);
+        loadDashboard(model);
         return "home";
     }
 
-    @PostMapping(path="/notice/delete")
-    public String deleteNotifications(Model model, @RequestParam("id") Long noticeId){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        String response = database.deleteNotification(noticeId);
-        loadNotifications(model, username);
-
-        model.addAttribute("fragment", "main");
-        model.addAttribute("message", response);
-        model.addAttribute("games", games);
-        return "home";
-    }
 }
