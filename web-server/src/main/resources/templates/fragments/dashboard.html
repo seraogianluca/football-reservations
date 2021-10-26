@@ -53,7 +53,7 @@
                 <div class="card-body d-inline-flex flex-column align-items-start overflow-auto" id="chat-window">
                     <div class="d-flex flex-column rounded-3 bg-message text-white mb-3 p-2" th:each="elem: ${messages}"
                          th:classappend="${#authentication.name} == ${elem.username} ? 'align-self-end bg-message-self':''">
-                        <span><small><strong th:utext="${elem.username}"></strong></small></span>
+                        <span><small><strong th:utext="${elem.username}"></strong> [<small class="fw-lighter" th:utext="${elem.timestamp}"></small>]</small></span>
                         <span th:utext="${elem.message}"></span>
                     </div>
                 </div>

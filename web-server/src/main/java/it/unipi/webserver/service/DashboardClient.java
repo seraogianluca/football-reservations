@@ -76,8 +76,10 @@ public class DashboardClient {
                 result = new ArrayList<Message>();
                 for (OtpErlangObject otpErlangObject : resultList) {
                     OtpErlangTuple tuple = (OtpErlangTuple)otpErlangObject;
-                    Message message = new Message(tuple.elementAt(1).toString().substring(1, tuple.elementAt(1).toString().length()-1),
-                                                    tuple.elementAt(2).toString().substring(1, tuple.elementAt(2).toString().length()-1));
+                    Message message = new Message(
+                            tuple.elementAt(1).toString().substring(1, tuple.elementAt(1).toString().length()-1),
+                            tuple.elementAt(2).toString().substring(1, tuple.elementAt(2).toString().length()-1),
+                            extractTimestamp((OtpErlangTuple)tuple.elementAt(0)));
                     result.add(message);
                 }
             }
@@ -110,5 +112,16 @@ public class DashboardClient {
             exception.printStackTrace();
         }
         return false;
+    }
+
+    private String extractTimestamp(OtpErlangTuple tuple) {
+        OtpErlangTuple date = (OtpErlangTuple)tuple.elementAt(0);
+        OtpErlangTuple time = (OtpErlangTuple)tuple.elementAt(1);
+
+        return  date.elementAt(2).toString() + "/" +
+                date.elementAt(1).toString() + "/" +
+                date.elementAt(0).toString() + " " +
+                time.elementAt(0).toString() + ":" +
+                time.elementAt(1).toString();
     }
 }
