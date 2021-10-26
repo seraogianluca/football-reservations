@@ -1,7 +1,7 @@
 -module(dashboard_db).
 -include("dashboard.hrl").
 
--export([init/0, start_db/0, stop_db/0, insert_message/3, read_messages/1]).
+-export([init/0, start_db/0, stop_db/0, insert_message/3, read_messages/1, delete_messages/1]).
 
 init() ->
   mnesia:create_schema([node()]),
@@ -42,3 +42,12 @@ read_messages(GameId) ->
       error
   end.
 
+delete_messages(GameId) ->
+  Delete = fun() ->
+    mnesia:delete({messages, GameId})
+           end,
+  case mnesia:transaction(Delete) of
+    {atomic, ok} -> success;
+    _ -> io:format("error deleting messages ~n"),
+      error
+  end.

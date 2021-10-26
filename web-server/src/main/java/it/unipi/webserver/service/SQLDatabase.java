@@ -1,8 +1,10 @@
 package it.unipi.webserver.service;
 
 import it.unipi.webserver.entity.Game;
+import it.unipi.webserver.entity.Notice;
 import it.unipi.webserver.entity.Player;
 import it.unipi.webserver.repository.GameRepository;
+import it.unipi.webserver.repository.NoticeRepository;
 import it.unipi.webserver.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -17,6 +19,8 @@ public class SQLDatabase {
     private PlayerRepository playerRepository;
     @Autowired
     private GameRepository gameRepository;
+    @Autowired
+    private NoticeRepository noticeRepository;
 
     public Player getPlayer(String username) {
         return playerRepository.findPlayerByUserName(username);
@@ -30,11 +34,11 @@ public class SQLDatabase {
     }
 
     public List<Game> browseGames(String username) {
-        List<Game> games = gameRepository.findAll();
-        Player player = playerRepository.findPlayerByUserName(username);
-        games.removeIf(game -> !(game.isPlayerManager(username) ||
+       List<Game> games = gameRepository.findAll();
+       Player player = playerRepository.findPlayerByUserName(username);
+       games.removeIf(game -> !(game.isPlayerManager(username) ||
                 game.participates(player)));
-        return games;
+       return games;
     }
 
     public List<Game> bookableGames(String username) {
@@ -79,11 +83,42 @@ public class SQLDatabase {
     @Transactional
     public String deleteGame(Long gameId) {
         try {
+            Game game = gameRepository.findGameByGameId(gameId);
+
             gameRepository.deleteByGameId(gameId);
+            for(Player p: game.getPlayers()) {
+                if(!game.isPlayerManager(p.getUserName())) {
+                    postNotification(p.getUserName(), "Match " + game.toString() + " deleted.");
+                }
+            }
         } catch(ObjectOptimisticLockingFailureException e){
             return "Sorry, something wrong occurs during deleting. Please try again.";
         }
+
         return "Match successfully deleted.";
+    }
+
+    public void postNotification(String username, String message) {
+        Player player = playerRepository.findPlayerByUserName(username);
+        Notice notice = new Notice(player, message);
+        notice.setPlayer(player);
+        noticeRepository.save(notice);
+    }
+
+    public List<Notice> loadNotifications(String username) {
+        Player player = playerRepository.findPlayerByUserName(username);
+        return noticeRepository.findNoticesByPlayer(player);
+    }
+
+    @Transactional
+    public String deleteNotifications(String username){
+        try {
+            Player player = playerRepository.findPlayerByUserName(username);
+            noticeRepository.deleteAllByPlayer(player);
+        }catch(ObjectOptimisticLockingFailureException e){
+            return "Sorry, something wrong occurs during deleting notifications. Please try again.";
+        }
+        return "Notifications successfully deleted.";
     }
 
 }

@@ -86,4 +86,29 @@ public class DashboardClient {
         }
         return result;
     }
+
+    public boolean deleteMessages(String gameId) {
+        OtpErlangTuple request = new OtpErlangTuple(new OtpErlangObject[] {
+                new OtpErlangAtom("$gen_call"),
+                new OtpErlangTuple(new OtpErlangObject[] {
+                        this.mailBox.self(),
+                        new OtpErlangAtom("nil")
+                }),
+                new OtpErlangTuple(new OtpErlangObject[] {
+                        new OtpErlangAtom("delete"),
+                        new OtpErlangString(gameId)
+                })
+        });
+
+        mailBox.send(serverName, serverNodeName, request);
+
+        try {
+            OtpErlangTuple response = (OtpErlangTuple)mailBox.receive(5000);
+            String result = ((OtpErlangAtom) response.elementAt(1)).atomValue();
+            return result.compareTo("success") == 0;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
 }

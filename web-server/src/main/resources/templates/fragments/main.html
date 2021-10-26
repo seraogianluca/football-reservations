@@ -11,35 +11,55 @@
 
         <div class="alert alert-success" role="alert" th:if="${message}" th:utext="${message}"></div>
 
-        <p class="lead">My games</p>
-        <table class="table">
-            <tr>
-                <th>Pitch</th>
-                <th>Time</th>
-                <th>Player manager</th>
-                <th>Players</th>
-                <th></th>
-            </tr>
-            <tr th:if="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
-                <form th:action="@{/home/games/delete(id=${game.gameId})}" th:method="post">
-                    <td th:text="${game.pitchName}"></td>
-                    <td th:text="${game.time}"></td>
-                    <td><span class="badge rounded-pill bg-info text-dark">Owner</span></td>
-                    <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
-                    <td>
-                        <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
-                    </td>
+        <div class="card rounded-3 mb-3 widget">
+            <div class="card-header">
+                <h5 class="card-title mb-0">My games</h5>
+            </div>
+            <div class="card-body d-inline-flex flex-column align-items-start">
+                <table class="table border-bottom-color align-middle">
+                    <tr>
+                        <th>Pitch</th>
+                        <th>Time</th>
+                        <th>Player manager</th>
+                        <th>Players</th>
+                        <th></th>
+                    </tr>
+                    <tr th:if="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
+                        <form th:action="@{/home/games/delete(id=${game.gameId})}" th:method="post">
+                            <td th:text="${game.pitchName}"></td>
+                            <td th:text="${game.time}"></td>
+                            <td><span class="badge rounded-pill bg-info text-dark">Owner</span></td>
+                            <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
+                            <td>
+                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </form>
+                    </tr>
+                    <tr th:unless="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
+                        <form th:action="@{/home/games/unbook(id=${game.gameId})}" th:method="post">
+                            <td th:text="${game.pitchName}"></td>
+                            <td th:text="${game.time}"></td>
+                            <td th:text="${game.playerManager}"></td>
+                            <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
+                            <td><button class="btn btn-outline-danger" type="submit"><i class="bi bi-calendar-x"></i></button></td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card rounded-3 widget">
+            <div class="card-header d-inline-flex">
+                <h5 class="card-title mb-0 align-self-center">Notifications</h5>
+                <form class="ms-auto" th:action="@{/home/notice/delete}" th:method="post">
+                    <button class="btn btn-outline-danger p-1 btn-sm" type="submit">Clear all</button>
                 </form>
-            </tr>
-            <tr th:unless="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
-                <form th:action="@{/home/games/unbook(id=${game.gameId})}" th:method="post">
-                    <td th:text="${game.pitchName}"></td>
-                    <td th:text="${game.time}"></td>
-                    <td th:text="${game.playerManager}"></td>
-                    <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
-                    <td><button class="btn btn-outline-danger" type="submit"><i class="bi bi-calendar-x"></i></button></td>
-                </form>
-            </tr>
-        </table>
+            </div>
+            <div class="card-body">
+                <div class="border-bottom p-2 border-bottom-color" th:each="elem: ${notices}">
+                    <span  th:utext="${elem.noticeMessage}"></span>
+                </div>
+            </div>
+        </div>
 </body>
 </html>

@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
 public class Game implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -56,5 +55,8 @@ public class Game implements Serializable {
     }
     public boolean participates(Player p) {
         return players.contains(p);
+    }
+    public String toString() {
+        return pitchName + " " + time;
     }
 }

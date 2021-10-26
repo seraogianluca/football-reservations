@@ -3,6 +3,7 @@ package it.unipi.webserver.controller;
 import it.unipi.webserver.entity.Game;
 import it.unipi.webserver.entity.Message;
 import it.unipi.webserver.entity.MyGames;
+import it.unipi.webserver.entity.Notice;
 import it.unipi.webserver.service.DashboardClient;
 import it.unipi.webserver.service.SQLDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ public class HomeController {
     private void updateGame(String username) {
         games.clear();
         games.addAll(database.browseGames(username));
+    }
+
+    private void loadNotifications(Model model, String username) {
+        List<Notice> notices = database.loadNotifications(username);
+        model.addAttribute("notices", notices);
     }
 
     @GetMapping(path="/match")
@@ -59,6 +65,7 @@ public class HomeController {
         String username = authentication.getName();
 
         updateGame(username);
+        loadNotifications(model, username);
 
         model.addAttribute("fragment", "main");
         model.addAttribute("games", games);
@@ -72,6 +79,7 @@ public class HomeController {
         String response = database.unbookGame(gameId, username);
 
         updateGame(username);
+        loadNotifications(model, username);
 
         model.addAttribute("fragment", "main");
         model.addAttribute("message", response);
@@ -108,8 +116,10 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         String response = database.deleteGame(gameId);
+        dashboardClient.deleteMessages(Long.toString(gameId));
 
         updateGame(username);
+        loadNotifications(model, username);
 
         model.addAttribute("fragment", "main");
         model.addAttribute("message", response);

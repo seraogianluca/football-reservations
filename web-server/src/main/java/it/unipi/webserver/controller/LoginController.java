@@ -7,12 +7,6 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class LoginController {
 
-    @GetMapping(value = "/home")
-    public String playerHome(Model model) {
-        model.addAttribute("fragment", "main");
-        return "home";
-    }
-
     @GetMapping("/login")
     public String login() {
         return "login";

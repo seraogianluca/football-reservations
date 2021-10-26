@@ -17,8 +17,10 @@ public class Player implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long playerId;
+
     private String userName;
     private String password;
+
     @ManyToMany(mappedBy = "players", fetch = FetchType.EAGER)
     @JsonBackReference
     private List<Game> games;

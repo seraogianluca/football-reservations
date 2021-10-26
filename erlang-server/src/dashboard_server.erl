@@ -1,5 +1,5 @@
 -module(dashboard_server).
--import(dashboard_db, [start_db/0, stop_db/0, insert_message/3, read_messages/1]).
+-import(dashboard_db, [start_db/0, stop_db/0, insert_message/3, read_messages/1, delete_messages/1]).
 
 -export([start_server/0, stop_server/0]).
 -export([init/1, handle_cast/2, handle_call/3]).
@@ -25,6 +25,10 @@ handle_call(Request, _From, _) ->
         {read, GameId} ->
             io:format("[INFO] read received~n"),
             Response = read_messages(GameId),
+            {reply, Response, {}};
+        {delete, GameId} ->
+            io:format("[INFO] delete received~n"),
+            Response = delete_messages(GameId),
             {reply, Response, {}};
         _ ->
             {reply, bad_request, {}}
