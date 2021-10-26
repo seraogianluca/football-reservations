@@ -167,4 +167,18 @@ public class HomeController {
         model.addAttribute("games", games);
         return "home";
     }
+
+    @PostMapping(path="/notice/delete")
+    public String deleteNotifications(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        database.deleteNotifications(username);
+
+        loadNotifications(model, username);
+
+        model.addAttribute("fragment", "main");
+        model.addAttribute("message", "Notification cleared.");
+        model.addAttribute("games", games);
+        return "home";
+    }
 }

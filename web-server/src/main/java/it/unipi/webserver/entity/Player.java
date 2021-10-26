@@ -25,6 +25,9 @@ public class Player implements Serializable {
     @JsonBackReference
     private List<Game> games;
 
+    @OneToMany(mappedBy = "player",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notice> notices;
+
     public Player(String name, String password){
         this.userName = name;
         this.password = password;
