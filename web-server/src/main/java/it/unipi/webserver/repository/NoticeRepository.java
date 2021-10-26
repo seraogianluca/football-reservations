@@ -10,4 +10,5 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     List<Notice> findNoticesByPlayer(Player player);
     void deleteAllByPlayer(Player player);
+    void deleteByNoticeId(Long noticeId);
 }

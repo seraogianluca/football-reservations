@@ -169,11 +169,11 @@ public class HomeController {
     }
 
     @PostMapping(path="/notice/delete")
-    public String deleteNotifications(Model model){
+    public String deleteNotifications(Model model, @RequestParam("id") Long noticeId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        database.deleteNotifications(username);
 
+        String response = database.deleteNotification(noticeId);
         loadNotifications(model, username);
 
         model.addAttribute("fragment", "main");
