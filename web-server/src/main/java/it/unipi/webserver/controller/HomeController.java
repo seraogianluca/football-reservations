@@ -177,7 +177,7 @@ public class HomeController {
         loadNotifications(model, username);
 
         model.addAttribute("fragment", "main");
-        model.addAttribute("message", "Notification cleared.");
+        model.addAttribute("message", response);
         model.addAttribute("games", games);
         return "home";
     }

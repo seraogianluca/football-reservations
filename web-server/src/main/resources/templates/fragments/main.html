@@ -30,7 +30,7 @@
                             <td th:text="${game.time}"></td>
                             <td><span class="badge rounded-pill bg-info text-dark">Owner</span></td>
                             <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
-                            <td>
+                            <td class="text-end">
                                 <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
                             </td>
                         </form>
@@ -41,7 +41,7 @@
                             <td th:text="${game.time}"></td>
                             <td th:text="${game.playerManager}"></td>
                             <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
-                            <td><button class="btn btn-outline-danger" type="submit"><i class="bi bi-calendar-x"></i></button></td>
+                            <td class="text-end"><button class="btn btn-outline-danger" type="submit"><i class="bi bi-calendar-x"></i></button></td>
                         </form>
                     </tr>
                 </table>
@@ -49,16 +49,20 @@
         </div>
 
         <div class="card rounded-3 widget">
-            <div class="card-header d-inline-flex">
-                <h5 class="card-title mb-0 align-self-center">Notifications</h5>
-                <form class="ms-auto" th:action="@{/home/notice/delete}" th:method="post">
-                    <button class="btn btn-outline-danger p-1 btn-sm" type="submit">Clear all</button>
-                </form>
+            <div class="card-header">
+                <h5 class="card-title mb-0">Notifications</h5>
             </div>
             <div class="card-body">
-                <div class="border-bottom p-2 border-bottom-color" th:each="elem: ${notices}">
-                    <span  th:utext="${elem.noticeMessage}"></span>
-                </div>
+                <table class="table border-bottom-color align-middle">
+                    <tr th:each="elem: ${notices}">
+                        <td  th:utext="${elem.noticeMessage}"></td>
+                        <td class="text-end">
+                            <form th:action="@{/home/notice/delete(id=${elem.noticeId})}" th:method="post">
+                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-x-lg"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
 </body>

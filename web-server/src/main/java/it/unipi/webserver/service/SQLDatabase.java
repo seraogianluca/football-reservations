@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -80,22 +81,27 @@ public class SQLDatabase {
         return "Match unbooked successfully.";
     }
 
-    @Transactional
     public String deleteGame(Long gameId) {
         try {
             Game game = gameRepository.findGameByGameId(gameId);
+            deleteGame(game);
 
-            gameRepository.deleteByGameId(gameId);
             for(Player p: game.getPlayers()) {
                 if(!game.isPlayerManager(p.getUserName())) {
-                    postNotification(p.getUserName(), "Match " + game.toString() + " deleted.");
+                    postNotification(p.getUserName(), "Match " + game + " deleted.");
                 }
             }
-        } catch(ObjectOptimisticLockingFailureException e){
+        } catch(ObjectOptimisticLockingFailureException e) {
             return "Sorry, something wrong occurs during deleting. Please try again.";
         }
 
         return "Match successfully deleted.";
+    }
+
+    @Transactional
+    public void deleteGame(Game game) throws ObjectOptimisticLockingFailureException {
+        // Made in this way otherwise Optimistic Locking Exception is not raised
+        gameRepository.delete(game);
     }
 
     public void postNotification(String username, String message) {
@@ -111,14 +117,9 @@ public class SQLDatabase {
     }
 
     @Transactional
-    public String deleteNotifications(String username){
-        try {
-            Player player = playerRepository.findPlayerByUserName(username);
-            noticeRepository.deleteAllByPlayer(player);
-        }catch(ObjectOptimisticLockingFailureException e){
-            return "Sorry, something wrong occurs during deleting notifications. Please try again.";
-        }
-        return "Notifications successfully deleted.";
+    public String deleteNotification(Long noticeId){
+        noticeRepository.deleteByNoticeId(noticeId);
+        return "Notification successfully deleted.";
     }
 
 }
