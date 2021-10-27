@@ -4,7 +4,7 @@
 -export([init/0, start_db/0, stop_db/0, handle_insert/3, handle_read/1, insert_dashboard/2]).
 
 % test
--export([delete_messages/1, read_dashboards/1, is_deleted/1]).
+-export([delete_messages/1, read_dashboards/1, is_deleted/1, delete_dashboard/1]).
 
 init() ->
   mnesia:create_schema([node()]),
@@ -14,10 +14,36 @@ init() ->
   mnesia:create_table(messages, [{type, bag}, {disc_copies, [node()]}, {attributes, record_info(fields, messages)}]).
 
 start_db() ->
-  mnesia:start().
+  mnesia:start(),
+  SleepTime = 10000,
+  GarbageCollector = spawn(fun() -> collector_loop(SleepTime) end),
+  ets:new(utilities, [set, named_table]),
+  ets:insert(utilities, {garbage_collector, GarbageCollector}).
 
 stop_db() ->
-  mnesia:stop().
+  mnesia:stop(),
+  [[GarbageCollector]] = ets:match(utilities, {garbage_collector, '$1'}),
+  GarbageCollector ! stop,
+  ets:delete(utilities).
+
+% Garbage collector
+clear_messages([]) ->
+  io:format("[GC] Cleaning process terminated ~n");
+clear_messages([H | T]) ->
+  delete_messages(H),
+  delete_dashboard(H),
+  clear_messages(T).
+
+collector_loop(SleepTime) ->
+  receive
+    stop -> io:format("[GC] Garbage collector terminated ~n")
+  after SleepTime ->
+    io:format("[GC] Start cleaning process ~n"),
+    Dashboards = read_dashboards(deleted),
+    io:format("[GC] Dashboards to clean: ~p ~n", [Dashboards]),
+    clear_messages(Dashboards),
+    collector_loop(SleepTime)
+  end.
 
 % Dashbboard functions
 is_deleted(GameId) ->
@@ -55,6 +81,15 @@ insert_dashboard(GameId, Status) ->
           end,
   case mnesia:transaction(Write) of
     {atomic, ok} -> io:format("[INFO] Dashboard inserted: ~p ~n", [Record]);
+    _ -> error
+  end.
+
+delete_dashboard(GameId) ->
+  Delete = fun() ->
+    mnesia:delete_object({dashboards, deleted, GameId})
+           end,
+  case mnesia:transaction(Delete) of
+    {atomic, ok} -> io:format("[INFO] Dashboard removed. ~n");
     _ -> error
   end.
 
