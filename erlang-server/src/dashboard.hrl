@@ -1,1 +1,2 @@
 -record(messages, {game_id, username, time, message}).
+-record(dashboards, {status, game}).

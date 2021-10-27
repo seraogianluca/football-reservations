@@ -27,11 +27,21 @@ public class DashboardClient {
         OtpErlangTuple date = (OtpErlangTuple)tuple.elementAt(0);
         OtpErlangTuple time = (OtpErlangTuple)tuple.elementAt(1);
 
+        String hour = time.elementAt(0).toString();
+        String minutes = time.elementAt(1).toString();
+
+        if(time.elementAt(0).toString().length() == 1) {
+            hour = "0" + time.elementAt(0).toString();
+        }
+
+        if(time.elementAt(1).toString().length() == 1) {
+            minutes = "0" + time.elementAt(1).toString();
+        }
+
         return  date.elementAt(2).toString() + "/" +
                 date.elementAt(1).toString() + "/" +
                 date.elementAt(0).toString() + " " +
-                time.elementAt(0).toString() + ":" +
-                time.elementAt(1).toString();
+                hour+ ":" + minutes;
     }
 
     private void sendRequest(OtpErlangTuple requestBody) {
@@ -56,7 +66,22 @@ public class DashboardClient {
         return null;
     }
 
-    public boolean insertMessage(String gameId, String username, String message){
+    private List<Message> getMessages(OtpErlangList messages) {
+        List<Message> result = new ArrayList<>();
+
+        for (OtpErlangObject otpErlangObject : messages) {
+            OtpErlangTuple tuple = (OtpErlangTuple) otpErlangObject;
+            Message message = new Message(
+                    tuple.elementAt(1).toString().substring(1, tuple.elementAt(1).toString().length() - 1),
+                    tuple.elementAt(2).toString().substring(1, tuple.elementAt(2).toString().length() - 1),
+                    extractTimestamp((OtpErlangTuple) tuple.elementAt(0)));
+            result.add(message);
+        }
+
+        return result;
+    }
+
+    public List<Message> insertMessage(String gameId, String username, String message){
          sendRequest(new OtpErlangTuple(new OtpErlangObject[] {
                         new OtpErlangAtom("insert"),
                         new OtpErlangString(gameId),
@@ -65,13 +90,17 @@ public class DashboardClient {
 
         OtpErlangTuple response = receiveResponse();
         if(response == null) {
-            return false;
+            return null;
         }
-        String result = ((OtpErlangAtom)response.elementAt(1)).atomValue();
-        return result.compareTo("success") == 0;
+
+        if (response.elementAt(1) instanceof OtpErlangList) {
+            return getMessages((OtpErlangList)response.elementAt(1));
+        }
+
+        return null;
     }
 
-    public boolean deleteMessages(String gameId) {
+    public boolean deleteDashboard(String gameId) {
         sendRequest(new OtpErlangTuple(new OtpErlangObject[] {
                 new OtpErlangAtom("delete"),
                 new OtpErlangString(gameId)}));
@@ -80,6 +109,7 @@ public class DashboardClient {
         if(response == null) {
             return false;
         }
+
         String result = ((OtpErlangAtom)response.elementAt(1)).atomValue();
         return result.compareTo("success") == 0;
     }
@@ -90,24 +120,15 @@ public class DashboardClient {
                         new OtpErlangString(gameId)}));
 
         OtpErlangTuple response = receiveResponse();
-        List<Message> result = new ArrayList<Message>();
         if(response == null) {
-            return result;
+            return null;
         }
 
         if (response.elementAt(1) instanceof OtpErlangList) {
-            OtpErlangList resultList = (OtpErlangList)response.elementAt(1);
-            for (OtpErlangObject otpErlangObject : resultList) {
-                OtpErlangTuple tuple = (OtpErlangTuple)otpErlangObject;
-                Message message = new Message(
-                        tuple.elementAt(1).toString().substring(1, tuple.elementAt(1).toString().length()-1),
-                        tuple.elementAt(2).toString().substring(1, tuple.elementAt(2).toString().length()-1),
-                        extractTimestamp((OtpErlangTuple)tuple.elementAt(0)));
-                result.add(message);
-            }
+            return getMessages((OtpErlangList)response.elementAt(1));
         }
 
-        return result;
+        return null;
     }
 
 }

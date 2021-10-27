@@ -1,9 +1,6 @@
 package it.unipi.webserver.controller;
 
-import it.unipi.webserver.entity.Game;
-import it.unipi.webserver.entity.Message;
-import it.unipi.webserver.entity.MyGames;
-import it.unipi.webserver.entity.Notice;
+import it.unipi.webserver.entity.*;
 import it.unipi.webserver.service.DashboardClient;
 import it.unipi.webserver.service.SQLDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +19,11 @@ public class HomeController {
     private SQLDatabase database;
     @Autowired
     private DashboardClient dashboardClient;
+
     @Autowired
     private MyGames games;
+    @Autowired
+    private MyNotices notices;
 
     private String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,7 +36,7 @@ public class HomeController {
     }
 
     private void loadNotifications(Model model, String username) {
-        List<Notice> notices = database.loadNotifications(username);
+        notices.update(database.loadNotifications(username));
         model.addAttribute("notices", notices);
     }
 
@@ -52,20 +52,21 @@ public class HomeController {
     }
 
     private void loadDashboard(Model model, String username) {
-        loadGames(username);
+        //loadGames(username);
+        loadNotifications(model, username);
         model.addAttribute("fragment", "dashboard");
         model.addAttribute("games", games);
     }
 
-    private void loadMessages(Model model, String gameId) {
-        List<Message> messages = dashboardClient.readMessages(gameId);
+    private void loadMessages(Model model, List<Message> messages, String active) {
         model.addAttribute("messages", messages);
         model.addAttribute("newmessage", new Message());
-        model.addAttribute("activeGame", gameId);
+        model.addAttribute("activeGame", active);
     }
 
     @GetMapping(path="/match")
     public String addMatchPage(Model model) {
+        loadNotifications(model, getUsername());
         model.addAttribute("fragment", "newmatch");
         model.addAttribute("match", new Game());
         return "home";
@@ -82,6 +83,7 @@ public class HomeController {
         }
 
         loadGames(username);
+        loadNotifications(model, username);
         model.addAttribute("fragment", "newmatch");
         return "home";
     }
@@ -96,6 +98,7 @@ public class HomeController {
     public String browseBookableGames(Model model) {
         String username = getUsername();
         List<Game> games = database.bookableGames(username);
+        loadNotifications(model, username);
         model.addAttribute("fragment", "search");
         model.addAttribute("games", games);
         return "home";
@@ -126,6 +129,7 @@ public class HomeController {
         }
 
         loadGames(username);
+        loadNotifications(model, username);
         model.addAttribute("fragment", "search");
         return "home";
     }
@@ -133,8 +137,8 @@ public class HomeController {
     @PostMapping(path = "/games/delete")
     public String deleteGame(Model model, @RequestParam("id") Long gameId) {
         if(database.deleteGame(gameId)) {
-            dashboardClient.deleteMessages(Long.toString(gameId));
-            setUiResponse(model,"Match successfully deleted.");
+            if(dashboardClient.deleteDashboard(Long.toString(gameId)))
+                setUiResponse(model,"Match successfully deleted.");
         } else {
             setUiResponse(model,"Sorry, something wrong occurs during deleting. Please try again.");
         }
@@ -165,15 +169,26 @@ public class HomeController {
     public String insertMessage(Model model,
                                 @ModelAttribute("newmessage") Message msg,
                                 @RequestParam("id") String gameId) {
-        dashboardClient.insertMessage(gameId, getUsername(), msg.getMessage());
-        loadMessages(model, gameId);
+        List<Message> messages = dashboardClient.insertMessage(gameId, getUsername(), msg.getMessage());
+        if(messages != null) {
+            loadMessages(model, messages, gameId);
+        } else {
+            setUiResponse(model, "Sorry, the match has been cancelled by the owner.");
+        }
+
         loadDashboard(model);
         return "home";
     }
 
     @PostMapping(path = "/dashboard/read")
     public String readMessage(Model model, @RequestParam("id") String gameId){
-        loadMessages(model, gameId);
+        List<Message> messages = dashboardClient.readMessages(gameId);
+        if(messages != null) {
+            loadMessages(model, messages, gameId);
+        } else {
+            setUiResponse(model, "Sorry, the match has been cancelled by the owner.");
+        }
+
         loadDashboard(model);
         return "home";
     }

@@ -16,6 +16,7 @@
                th:classappend="${#strings.startsWith(#httpServletRequest.getRequestURI(),'/home/games') ? 'active':''}"
                th:href="@{/home/games}">
                 <i class="bi bi-house"></i> Home
+                <span th:unless="${#lists.size(notices)} == 0" class="badge bg-danger" th:utext="${#lists.size(notices)}"></span>
             </a>
             <a class="nav-link text-start text-white text-decoration-none w-100"
                th:classappend="${#httpServletRequest.getRequestURI() == '/home/match' ? 'active':''}"

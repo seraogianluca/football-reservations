@@ -1,6 +1,7 @@
 package it.unipi.webserver.configuration;
 
 import it.unipi.webserver.entity.MyGames;
+import it.unipi.webserver.entity.MyNotices;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -15,5 +16,13 @@ public class SessionConfig {
             proxyMode = ScopedProxyMode.TARGET_CLASS)
     public MyGames games() {
         return new MyGames();
+    }
+
+    @Bean
+    @Scope(
+            value = WebApplicationContext.SCOPE_SESSION,
+            proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public MyNotices notices() {
+        return new MyNotices();
     }
 }
