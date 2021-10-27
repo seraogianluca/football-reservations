@@ -173,7 +173,7 @@ public class HomeController {
         if(messages != null) {
             loadMessages(model, messages, gameId);
         } else {
-            setUiResponse(model, "Sorry, the match has been cancelled by the owner.");
+            setUiResponse(model, "Sorry, the match has been deleted by the owner.");
         }
 
         loadDashboard(model);
@@ -186,7 +186,7 @@ public class HomeController {
         if(messages != null) {
             loadMessages(model, messages, gameId);
         } else {
-            setUiResponse(model, "Sorry, the match has been cancelled by the owner.");
+            setUiResponse(model, "Sorry, the match has been deleted by the owner.");
         }
 
         loadDashboard(model);
