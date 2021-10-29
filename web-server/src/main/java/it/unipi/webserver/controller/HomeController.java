@@ -57,6 +57,12 @@ public class HomeController {
         model.addAttribute("fragment", "dashboard");
         model.addAttribute("games", games);
     }
+    
+    @GetMapping(path = "/dashboard")
+    public String loadDashboard(Model model) {
+        loadDashboard(model, getUsername());
+        return "home";
+    }
 
     private void loadMessages(Model model, List<Message> messages, String active) {
         model.addAttribute("messages", messages);
@@ -156,12 +162,6 @@ public class HomeController {
         }
 
         loadMainPage(model, getUsername());
-        return "home";
-    }
-
-    @GetMapping(path = "/dashboard")
-    public String loadDashboard(Model model) {
-        loadDashboard(model, getUsername());
         return "home";
     }
 
