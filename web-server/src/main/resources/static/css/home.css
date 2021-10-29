@@ -16,3 +16,11 @@ body {
 .bg-info {
     background-color: #B5CDA3 !important;
 }
+
+.widget {
+    background-color: #FAEBE0 !important;
+}
+
+.border-bottom-color {
+    border-color: rgba(0,0,0,.125) !important;
+}

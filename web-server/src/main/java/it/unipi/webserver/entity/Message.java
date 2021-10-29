@@ -12,9 +12,11 @@ import lombok.ToString;
 public class Message {
     private String username;
     private String message;
+    private String timestamp;
 
-    public Message(String username, String message) {
+    public Message(String username, String message, String timestamp) {
         this.username = username;
         this.message = message;
+        this.timestamp = timestamp;
     }
 }

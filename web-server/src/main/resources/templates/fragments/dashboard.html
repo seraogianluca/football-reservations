@@ -16,14 +16,16 @@
     <h1>Dashboards</h1>
     <hr>
 
-    <div class="row h-50">
+    <div class="alert alert-danger" role="alert" th:if="${message}" th:text="${message}"></div>
+
+    <div class="row h-50" th:unless="${message}">
         <div class="col-4">
-            <div class="card rounded-3">
+            <div class="card rounded-3 widget mb-3">
                 <div class="card-header">
-                    <h5 class="card-title">Games</h5>
+                    <h5 class="card-title mb-0">Games</h5>
                 </div>
                 <div class="card-body d-inline-flex flex-column align-items-start">
-                    <table class="table">
+                    <table class="table border-bottom-color align-middle">
                         <tr>
                             <th>Pitch</th>
                             <th>Time</th>
@@ -32,8 +34,8 @@
                         <tr th:each="game: ${games}">
                             <form th:action="@{/home/dashboard/read(id=${game.gameId})}" th:method="post">
                                 <td th:text="${game.pitchName}"></td>
-                                <td th:text="${game.time}"></td>
-                                <td>
+                                <td th:text="'Today at ' + ${game.time}"></td>
+                                <td class="text-end">
                                     <button class="btn btn-outline-warning"
                                             th:classappend="${activeGame} == ${game.gameId} ? 'active-chat':''"
                                             type="submit"><i class="bi bi-chat-left-text"></i></button>
@@ -46,14 +48,16 @@
         </div>
 
         <div class="col-8" th:if="${messages}">
-            <div class="card rounded-3 chat">
+            <div class="card rounded-3 chat widget mb-3">
                 <div class="card-header">
-                    <h5 class="card-title">Dashboard</h5>
+                    <h5 class="card-title mb-0">Dashboard</h5>
                 </div>
                 <div class="card-body d-inline-flex flex-column align-items-start overflow-auto" id="chat-window">
-                    <div class="d-flex flex-column rounded-3 bg-message text-white mb-3 p-2" th:each="elem: ${messages}"
-                         th:classappend="${#authentication.name} == ${elem.username} ? 'align-self-end bg-message-self':''">
-                        <span><small><strong th:utext="${elem.username}"></strong></small></span>
+                    <div class="d-flex flex-column rounded-3 bg-message text-white mb-3 p-2 mw-100"
+                         th:classappend="${#authentication.name} == ${elem.username} ? 'align-self-end bg-message-self':''"
+                         th:each="elem: ${messages}">
+                        <span><small><strong th:unless="${elem.username} == 'System'" th:utext="${elem.username}"></strong>
+                            [<small class="fw-lighter" th:utext="${elem.timestamp}"></small>]</small></span>
                         <span th:utext="${elem.message}"></span>
                     </div>
                 </div>
@@ -61,8 +65,10 @@
                     <form th:action="@{/home/dashboard/insert(id=${activeGame})}" th:object="${newmessage}" th:method="post">
                         <input type="hidden" th:field="*{username}" th:value="${#authentication.name}">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Write a message..." aria-label="Message" aria-describedby="message" th:field="*{message}" required>
-                            <button class="btn btn-outline-secondary" type="submit" id="message"><i class="bi bi-pin-angle"></i> Post</button>
+                            <input type="text" class="form-control" placeholder="Write a message..."
+                                   aria-label="Message" aria-describedby="message" th:field="*{message}" required>
+                            <button class="btn btn-outline-secondary" type="submit" id="message">
+                                <i class="bi bi-pin-angle"></i> Post</button>
                         </div>
                     </form>
                 </div>
