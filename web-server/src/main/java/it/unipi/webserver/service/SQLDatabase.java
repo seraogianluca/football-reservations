@@ -99,7 +99,7 @@ public class SQLDatabase {
             deleteGame(game);
             for(Player p: game.getPlayers()) {
                 if(!game.isPlayerManager(p.getUserName())) {
-                    postNotification(p.getUserName(), "Match " + game + " deleted.");
+                    postNotification(p.getUserName(), "Match deleted: " + game + ".");
                 }
             }
         } catch(ObjectOptimisticLockingFailureException e) {

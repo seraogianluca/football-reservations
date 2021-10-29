@@ -57,6 +57,6 @@ public class Game implements Serializable {
         return players.contains(p);
     }
     public String toString() {
-        return pitchName + " " + time;
+        return pitchName + " at " + time;
     }
 }
