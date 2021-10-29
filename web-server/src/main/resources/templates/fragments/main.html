@@ -27,7 +27,7 @@
                     <tr th:if="${game.playerManager} == ${#authentication.name}" th:each="game: ${games}">
                         <form th:action="@{/home/games/delete(id=${game.gameId})}" th:method="post">
                             <td th:text="${game.pitchName}"></td>
-                            <td th:text="${game.time}"></td>
+                            <td th:text="'Today @ ' + ${game.time}"></td>
                             <td><span class="badge rounded-pill bg-info text-dark">Owner</span></td>
                             <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
                             <td class="text-end">

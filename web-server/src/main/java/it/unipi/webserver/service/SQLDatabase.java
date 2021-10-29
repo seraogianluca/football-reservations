@@ -23,6 +23,16 @@ public class SQLDatabase {
     @Autowired
     private NoticeRepository noticeRepository;
 
+    public boolean addPlayer(String username, String password) {
+        try {
+            Player player = new Player(username, password);
+            playerRepository.save(player);
+        } catch(Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     public Player getPlayer(String username) {
         return playerRepository.findPlayerByUserName(username);
     }

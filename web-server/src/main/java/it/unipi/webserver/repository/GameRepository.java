@@ -8,7 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface GameRepository extends JpaRepository<Game, Long> {
 
     Game findGameByGameId(Long gameId);
-    void deleteByGameId(Long id);
-    int deleteByGameIdAndVersion(Long id, Long version);
-
+    Game findGameByPlayerManagerAndPitchName(String playerManager, String PitchName);
 }
