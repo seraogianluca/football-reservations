@@ -28,13 +28,15 @@
                     <table class="table border-bottom-color align-middle">
                         <tr>
                             <th>Pitch</th>
+                            <th>Day</th>
                             <th>Time</th>
                             <th></th>
                         </tr>
                         <tr th:each="game: ${games}">
                             <form th:action="@{/home/dashboard/read(id=${game.gameId})}" th:method="post">
                                 <td th:text="${game.pitchName}"></td>
-                                <td th:text="'Today at ' + ${game.time}"></td>
+                                <td th:text="${#dates.format(game.gameDay, 'dd-MM-yyyy')}"></td>
+                                <td th:text="${game.time}"></td>
                                 <td class="text-end">
                                     <button class="btn btn-outline-warning"
                                             th:classappend="${activeGame} == ${game.gameId} ? 'active-chat':''"

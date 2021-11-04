@@ -50,7 +50,7 @@ public class SQLDatabase {
     }
 
     public List<Game> browseGames(String username) {
-       List<Game> games = gameRepository.findAll();
+       List<Game> games = gameRepository.findGameByGameDayIsAfter(new Date());
        Player player = playerRepository.findPlayerByUserName(username);
        games.removeIf(game -> !(game.isPlayerManager(username) ||
                 game.participates(player)));
@@ -58,7 +58,7 @@ public class SQLDatabase {
     }
 
     public List<Game> bookableGames(String username) {
-        List<Game> games = gameRepository.findAll();
+        List<Game> games = gameRepository.findGameByGameDayIsAfter(new Date());
         Player player = playerRepository.findPlayerByUserName(username);
         games.removeIf(game -> game.isPlayerManager(username) ||
                 game.participates(player));
