@@ -11,7 +11,6 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
