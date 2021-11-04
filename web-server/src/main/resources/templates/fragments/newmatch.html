@@ -32,9 +32,14 @@
             <label class="col-2 col-form-label col-form-label-lg" for="time">Time</label>
             <div class="col-4">
                 <select class="form-select form-select-lg" id="time" th:field="*{time}" required>
-                    <option value="19" selected>19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
+                    <option th:unless="${#dates.format(#dates.createNow(), 'HH')} > 19"
+                            value="19:00">19:00</option>
+                    <option th:unless="${#dates.format(#dates.createNow(), 'HH')} > 20"
+                            value="20:00">20:00</option>
+                    <option th:unless="${#dates.format(#dates.createNow(), 'HH')} > 21"
+                            value="21:00">21:00</option>
+                    <option th:unless="${#dates.format(#dates.createNow(), 'HH')} > 22"
+                            value="22:00">22:00</option>
                 </select>
             </div>
         </div>

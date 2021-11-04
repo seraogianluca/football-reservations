@@ -38,7 +38,7 @@ public class SQLDatabase {
         return playerRepository.findPlayerByUserName(username);
     }
 
-    public boolean addGame(String playerManager, String pitchName, Date gameDay, int time) {
+    public boolean addGame(String playerManager, String pitchName, Date gameDay, Date time) {
         try {
             Player manager = playerRepository.findPlayerByUserName(playerManager);
             Game game = new Game(manager, pitchName, gameDay, time);
@@ -50,7 +50,7 @@ public class SQLDatabase {
     }
 
     public List<Game> browseGames(String username) {
-       List<Game> games = gameRepository.findGameByGameDayIsAfter(new Date());
+       List<Game> games = gameRepository.findGameByGameDayIsAfter(new Date(), new Date());
        Player player = playerRepository.findPlayerByUserName(username);
        games.removeIf(game -> !(game.isPlayerManager(username) ||
                 game.participates(player)));
@@ -58,7 +58,7 @@ public class SQLDatabase {
     }
 
     public List<Game> bookableGames(String username) {
-        List<Game> games = gameRepository.findGameByGameDayIsAfter(new Date());
+        List<Game> games = gameRepository.findGameByGameDayIsAfter(new Date(), new Date());
         Player player = playerRepository.findPlayerByUserName(username);
         games.removeIf(game -> game.isPlayerManager(username) ||
                 game.participates(player));

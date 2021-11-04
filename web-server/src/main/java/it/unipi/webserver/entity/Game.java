@@ -3,6 +3,7 @@ package it.unipi.webserver.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,7 +28,9 @@ public class Game implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date gameDay;
 
-    private int time;
+    @Temporal(TemporalType.TIME)
+    @DateTimeFormat(pattern = "HH:mm")
+    private Date time;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -38,7 +41,7 @@ public class Game implements Serializable {
     public Game(){
         this.players = new ArrayList<>();
     }
-    public Game(Player playerManager, String pitchName, Date gameDay, int time) {
+    public Game(Player playerManager, String pitchName, Date gameDay, Date time) {
         this.gameDay = gameDay;
         this.time = time;
         this.playerManager = playerManager.getUserName();
@@ -62,6 +65,6 @@ public class Game implements Serializable {
         return players.contains(p);
     }
     public String toString() {
-        return pitchName + " at " + time;
+        return pitchName + " (" + gameDay + " " + time + ")";
     }
 }

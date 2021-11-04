@@ -15,6 +15,6 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     Game findGameByGameId(Long gameId);
     Game findGameByPlayerManagerAndPitchName(String playerManager, String PitchName);
 
-    @Query("select g from Game g where g.gameDay >= :today")
-    List<Game> findGameByGameDayIsAfter(@Param("today") Date today);
+    @Query("select g from Game g where g.gameDay >= :today and g.time >= :now")
+    List<Game> findGameByGameDayIsAfter(@Param("today") Date today, @Param("now") Date now);
 }

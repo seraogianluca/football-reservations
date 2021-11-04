@@ -39,7 +39,7 @@ class WebServerApplicationTests {
         }
 
         // Create a match
-        assertThat(database.addGame("manager", "somePitch", new Date(), 20)).isTrue();
+        assertThat(database.addGame("manager", "somePitch", new Date(), new Date())).isTrue();
         System.out.println("Match created.");
 
         final Game srcGame = gameRepository.findGameByPlayerManagerAndPitchName("manager", "somePitch");
@@ -83,7 +83,7 @@ class WebServerApplicationTests {
         }
 
         // Create a match
-        assertThat(database.addGame("manager", "somePitch", new Date(), 20)).isTrue();
+        assertThat(database.addGame("manager", "somePitch", new Date(), new Date())).isTrue();
         System.out.println("Match created.");
 
         Game srcGame = gameRepository.findGameByPlayerManagerAndPitchName("manager", "somePitch");

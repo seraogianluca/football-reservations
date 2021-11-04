@@ -29,7 +29,7 @@
                         <form th:action="@{/home/games/delete(id=${game.gameId})}" th:method="post">
                             <td th:text="${game.pitchName}"></td>
                             <td th:text="${game.gameDay}"></td>
-                            <td th:text="${game.time}"></td>
+                            <td th:text="${#dates.format(game.time, 'HH:mm')}"></td>
                             <td><span class="badge rounded-pill bg-info text-dark">Owner</span></td>
                             <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
                             <td class="text-end">
@@ -41,7 +41,7 @@
                         <form th:action="@{/home/games/unbook(id=${game.gameId})}" th:method="post">
                             <td th:text="${game.pitchName}"></td>
                             <td th:text="${game.gameDay}"></td>
-                            <td th:text="${game.time}"></td>
+                            <td th:text="${#dates.format(game.time, 'HH:mm')}"></td>
                             <td th:text="${game.playerManager}"></td>
                             <td th:text="${#lists.size(game.players)} + ' / 10'"></td>
                             <td class="text-end"><button class="btn btn-outline-danger" type="submit"><i class="bi bi-calendar-x"></i></button></td>

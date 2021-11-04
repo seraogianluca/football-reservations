@@ -38,9 +38,9 @@ public class DashboardClient {
             minutes = "0" + time.elementAt(1).toString();
         }
 
-        return  date.elementAt(2).toString() + "/" +
+        return  date.elementAt(0).toString() + "/" +
                 date.elementAt(1).toString() + "/" +
-                date.elementAt(0).toString() + " " +
+                date.elementAt(2).toString() + " " +
                 hour+ ":" + minutes;
     }
 
