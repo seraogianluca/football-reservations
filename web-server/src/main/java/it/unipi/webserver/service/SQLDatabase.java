@@ -8,6 +8,7 @@ import it.unipi.webserver.repository.NoticeRepository;
 import it.unipi.webserver.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.OptimisticLockException;
@@ -23,6 +24,29 @@ public class SQLDatabase {
     private GameRepository gameRepository;
     @Autowired
     private NoticeRepository noticeRepository;
+    @Autowired
+    private DashboardClient dashboardClient;
+
+    @Scheduled(fixedRate=10000)
+    public void cleanDatabase() {
+        try {
+            List<Game> games = gameRepository.findGameByGameDayBefore(new Date(), new Date());
+            int toRemove = games.size();
+
+            if(toRemove > 0) {
+                System.out.println("[SCHEDULED TASK] " + toRemove + " games to remove.");
+
+                for(Game g: games) {
+                    dashboardClient.deleteDashboard(Long.toString(g.getGameId()));
+                    gameRepository.deleteById(g.getGameId());
+                }
+
+                System.out.println("[SCHEDULED TASK] " + toRemove + " games removed.");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean addPlayer(String username, String password) {
         try {
