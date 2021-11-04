@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,10 +38,10 @@ public class SQLDatabase {
         return playerRepository.findPlayerByUserName(username);
     }
 
-    public boolean addGame(String playerManager, String pitchName, int time) {
+    public boolean addGame(String playerManager, String pitchName, Date gameDay, int time) {
         try {
             Player manager = playerRepository.findPlayerByUserName(playerManager);
-            Game game = new Game(manager, pitchName, time);
+            Game game = new Game(manager, pitchName, gameDay, time);
             gameRepository.save(game);
         } catch(Exception e) {
             return false;

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +39,7 @@ class WebServerApplicationTests {
         }
 
         // Create a match
-        assertThat(database.addGame("manager", "somePitch", 20)).isTrue();
+        assertThat(database.addGame("manager", "somePitch", new Date(), 20)).isTrue();
         System.out.println("Match created.");
 
         final Game srcGame = gameRepository.findGameByPlayerManagerAndPitchName("manager", "somePitch");
@@ -82,7 +83,7 @@ class WebServerApplicationTests {
         }
 
         // Create a match
-        assertThat(database.addGame("manager", "somePitch", 20)).isTrue();
+        assertThat(database.addGame("manager", "somePitch", new Date(), 20)).isTrue();
         System.out.println("Match created.");
 
         Game srcGame = gameRepository.findGameByPlayerManagerAndPitchName("manager", "somePitch");

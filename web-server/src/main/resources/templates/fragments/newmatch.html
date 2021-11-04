@@ -2,6 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="newmatch">
     <title>New Match</title>
+    <!--  jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Bootstrap Date-Picker Plugin -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
 </head>
 <body>
     <h1>Create a new match</h1>
@@ -11,14 +17,20 @@
 
     <form class="horizontal-form p-5" th:unless="${message}" th:action="@{/home/match/create}" th:object="${match}" method="post">
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label col-form-label-lg" for="pitch">Pitch name</label>
-            <div class="col-sm-10">
+            <label class="col-2 col-form-label col-form-label-lg" for="pitch">Pitch name</label>
+            <div class="col-10">
                 <input type="text" class="form-control form-control-lg" placeholder="Pitch" aria-label="Pitch" id="pitch" th:field="*{pitchName}" required/>
             </div>
         </div>
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label col-form-label-lg" for="time">Today at </label>
-            <div class="col-sm-10">
+            <label class="col-2 col-form-label col-form-label-lg" for="date">Day</label>
+            <div class="col-4">
+                <input class="form-control form-control-lg"
+                       id="date" name="date" placeholder="mm/dd/yyyy" type="text"
+                       th:field="*{gameDay}" required/>
+            </div>
+            <label class="col-2 col-form-label col-form-label-lg" for="time">Time</label>
+            <div class="col-4">
                 <select class="form-select form-select-lg" id="time" th:field="*{time}" required>
                     <option value="19" selected>19</option>
                     <option value="20">20</option>
@@ -26,9 +38,22 @@
                 </select>
             </div>
         </div>
-        <div class="d-grid col-4 mx-auto">
+        <div class="d-grid justify-content-end">
             <button class="btn btn-outline-success btn-lg" type="submit">Save</button>
         </div>
     </form>
+    <script>
+        $(document).ready(function(){
+            var date_input=$('input[name="gameDay"]'); //our date input has the name "date"
+            var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+            var options={
+                format: 'mm/dd/yyyy',
+                container: container,
+                autoclose: true,
+                startDate: new Date(),
+            };
+            date_input.datepicker(options);
+        })
+    </script>
 </body>
 </html>

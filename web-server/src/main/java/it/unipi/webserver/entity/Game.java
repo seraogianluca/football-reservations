@@ -3,11 +3,12 @@ package it.unipi.webserver.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,9 +22,13 @@ public class Game implements Serializable {
     @Version
     private Long version;
 
-    private int time;
     private String playerManager;
     private String pitchName;
+
+    @Temporal(TemporalType.DATE)
+    private Date gameDay;
+
+    private int time;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -34,9 +39,11 @@ public class Game implements Serializable {
     public Game(){
         this.players = new ArrayList<>();
     }
-    public Game(Player playerManager, String pitchName, int time) {
-        this.playerManager = playerManager.getUserName();
+    public Game(Player playerManager, String pitchName, Date gameDay, int time) {
+        //final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+        this.gameDay = gameDay;
         this.time = time;
+        this.playerManager = playerManager.getUserName();
         this.pitchName = pitchName;
         this.players = new ArrayList<>();
         this.players.add(playerManager);
