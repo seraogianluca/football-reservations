@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +39,6 @@ public class Game implements Serializable {
         this.players = new ArrayList<>();
     }
     public Game(Player playerManager, String pitchName, Date gameDay, int time) {
-        //final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
         this.gameDay = gameDay;
         this.time = time;
         this.playerManager = playerManager.getUserName();
