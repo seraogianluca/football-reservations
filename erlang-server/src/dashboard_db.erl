@@ -80,7 +80,8 @@ insert_dashboard(GameId, Status) ->
     mnesia:write(Record)
           end,
   case mnesia:transaction(Write) of
-    {atomic, ok} -> io:format("[INFO] Dashboard inserted: ~p ~n", [Record]);
+    {atomic, ok} -> io:format("[INFO] Dashboard inserted: ~p ~n", [Record]),
+    success;
     _ -> error
   end.
 
