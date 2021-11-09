@@ -88,8 +88,6 @@ class WebServerApplicationTests {
 
         Game srcGame = gameRepository.findGameByPlayerManagerAndPitchName("manager", "somePitch");
 
-        // One should book successfully
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
         for(int i = 0; i < 10; i++) {
             String username = "player" + i;
             System.out.println("Player " + username + " is trying to book.");
