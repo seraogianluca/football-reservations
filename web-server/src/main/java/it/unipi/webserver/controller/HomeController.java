@@ -82,7 +82,7 @@ public class HomeController {
     public String addGame(Model model, @ModelAttribute(value="match") Game match) {
         String username = getUsername();
 
-        if(!database.addGame(username, match.getPitchName(), match.getTime())) {
+        if(!database.addGame(username, match.getPitchName(), match.getGameDay(), match.getTime())) {
             setUiResponse(model, "Sorry, something wrong occurs. Please try again.");
         } else {
             setUiResponse(model, "Match successfully created.");

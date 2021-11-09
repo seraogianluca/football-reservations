@@ -8,10 +8,11 @@ import it.unipi.webserver.repository.NoticeRepository;
 import it.unipi.webserver.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -22,6 +23,29 @@ public class SQLDatabase {
     private GameRepository gameRepository;
     @Autowired
     private NoticeRepository noticeRepository;
+    @Autowired
+    private DashboardClient dashboardClient;
+
+    @Scheduled(fixedRate=10000)
+    public void cleanDatabase() {
+        try {
+            List<Game> games = gameRepository.findGameByGameDayBefore(new Date(), new Date());
+            int toRemove = games.size();
+
+            if(toRemove > 0) {
+                System.out.println("[SCHEDULED TASK] " + toRemove + " games to remove.");
+
+                for(Game g: games) {
+                    dashboardClient.deleteDashboard(Long.toString(g.getGameId()));
+                    gameRepository.deleteById(g.getGameId());
+                }
+
+                System.out.println("[SCHEDULED TASK] " + toRemove + " games removed.");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean addPlayer(String username, String password) {
         try {
@@ -37,10 +61,10 @@ public class SQLDatabase {
         return playerRepository.findPlayerByUserName(username);
     }
 
-    public boolean addGame(String playerManager, String pitchName, int time) {
+    public boolean addGame(String playerManager, String pitchName, Date gameDay, Date time) {
         try {
             Player manager = playerRepository.findPlayerByUserName(playerManager);
-            Game game = new Game(manager, pitchName, time);
+            Game game = new Game(manager, pitchName, gameDay, time);
             gameRepository.save(game);
         } catch(Exception e) {
             return false;
@@ -49,7 +73,7 @@ public class SQLDatabase {
     }
 
     public List<Game> browseGames(String username) {
-       List<Game> games = gameRepository.findAll();
+       List<Game> games = gameRepository.findGameByGameDayIsAfter(new Date(), new Date());
        Player player = playerRepository.findPlayerByUserName(username);
        games.removeIf(game -> !(game.isPlayerManager(username) ||
                 game.participates(player)));
@@ -57,7 +81,7 @@ public class SQLDatabase {
     }
 
     public List<Game> bookableGames(String username) {
-        List<Game> games = gameRepository.findAll();
+        List<Game> games = gameRepository.findGameByGameDayIsAfter(new Date(), new Date());
         Player player = playerRepository.findPlayerByUserName(username);
         games.removeIf(game -> game.isPlayerManager(username) ||
                 game.participates(player));
